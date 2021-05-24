@@ -1,9 +1,9 @@
-#include "test.h"
+#include "OS_pro.h"
 #include "FullPath.h"
 #include "login.h"
+
 int tempLength=1;
 int tempLimit=1;
-
 
 int login(struct PathNode *head)
 {
@@ -201,8 +201,10 @@ int menu(struct PathNode *head)
                 cout<<"ָ�ȫ"<<endl;
             else
             {
-                char *newcontent = "";
-                cin>>newcontent;
+                //char *newcontent = "";
+                char* newcontent = new(char);
+                cin.get(newcontent, 10);
+                //cin>>newcontent;
                 a=getchar();
                 writefile(inputname,newcontent,head);
             }
@@ -283,12 +285,11 @@ int menu(struct PathNode *head)
                 }
             }
         }
-        /*else if(order=="cls")
+        else if(order=="cls")
         {
-            int system(const char *string);
             system("cls");
             DisplayFullPath(head);
-        }*/
+        }
         else if(order=="changeuser")
         {
             int j=0;

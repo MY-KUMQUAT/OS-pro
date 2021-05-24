@@ -1,4 +1,4 @@
-#include "test.h"
+#include "OS_pro.h"
 
 void write_system(FILE *fp)   //将磁盘信息统统写入系统文件中（以二进制文件的形式）
 {

@@ -26,7 +26,6 @@ void copyfile(struct PathNode* head, char filename[])
 					new_content[k] = storage[inodes[d_or_f[a].dir_list[i].inode].inode_fileaddress[j]].txt_content[k];
 				}
 			}
-			//cout<<endl;
 			break;
 		}
 	}

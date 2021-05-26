@@ -29,7 +29,6 @@ void format()  //格式化，初始化
 		d_or_f[i].countcount = 0;
 
 		strcpy(d_or_f[i].dir_directoryname, "");
-		//d_or_f[i].dir_list[32]="";
 	}
 
 	//Initialize root

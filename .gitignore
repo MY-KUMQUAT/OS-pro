@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+filesystem
+OS_pro.vcxproj
+OS_pro.vcxproj.filters
+OS_pro.vcxproj.user

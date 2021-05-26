@@ -3,6 +3,7 @@
 #include "login.h"
 #include <stdio.h>
 #include <malloc.h>
+
 struct PathNode* InitPathNode()
 {
 	struct PathNode* p1;
@@ -53,11 +54,6 @@ int Locate(struct PathNode* head)
 				flag = 1;
 				break;
 			}
-			/*else
-			{
-				printf("fail\n");
-				return -1;
-			}*/
 		}
 		if (flag != 1) {
 			printf("fail\n");
@@ -65,25 +61,21 @@ int Locate(struct PathNode* head)
 		}
 		p1 = p1->next;
 	}
-	//printf("%d",p1->Node_Inode);
 	return p1->Node_Inode;
 }
 void Enter(struct PathNode* head, char* FILENAME)
 {
 	int a = Locate(head);
-	//printf("%d",a);
 	for (int i = 0; i < d_or_f[a].countcount; i++)
 	{
 		if (strcmp(FILENAME, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_userID == userID)
 		{
-			//printf("find\n");
 			struct PathNode* p1 = InitPathNode();
 			p1->NodeName = FILENAME;
 			p1->Node_Inode = d_or_f[a].dir_list[i].inode;
 			InsertNode(head, p1);
 			return;
 		}
-
 	}
 	printf("error\n");
 }

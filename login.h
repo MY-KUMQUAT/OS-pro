@@ -16,6 +16,7 @@ int  menu(struct PathNode* head);
 int changeuser(string str);
 int login(struct PathNode* head);
 char* ChangeStrToChar(string InputString);
+char* gettext();
 void help();
 
 extern int userID;

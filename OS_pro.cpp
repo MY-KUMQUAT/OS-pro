@@ -12,7 +12,6 @@ struct PathNode* paste_head;
 
 int main()
 {
-	int a, b;
 	struct PathNode* head = InitPathNode();
 	head->NodeName = d_or_f[0].dir_directoryname;
 	head->Node_Inode = 0;
@@ -36,7 +35,5 @@ int main()
 	}
 
 	login(head);
-
 	write_system(fp);
-	//cout<<"an"<<endl;
 }

@@ -14,7 +14,6 @@ void create_directory(char directoryname[], int length, int userID, int limit, s
 			}
 		}
 
-
 		for (int i = 1; i < num_OF_inode; i++)
 		{
 			if (d_or_f[i].df_inum == -1)

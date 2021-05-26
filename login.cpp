@@ -1,6 +1,7 @@
 #include "OS_pro.h"
 #include "FullPath.h"
 #include "login.h"
+#include <conio.h>
 
 int tempLength = 1;
 int tempLimit = 1;
@@ -50,17 +51,17 @@ int login(struct PathNode* head)
 void help()
 {
 	cout << "-----------可用命令菜单：------------" << endl;
-	cout << "           1.createdir                  " << endl;
-	cout << "           2.createfile                    " << endl;
-	cout << "           3.deletedir                    " << endl;
+	cout << "           1.mkdir                  " << endl;
+	cout << "           2.create                    " << endl;
+	cout << "           3.rm-rf                    " << endl;
 	cout << "           4.enter                   " << endl;
 	cout << "           5.cd                   " << endl;
 	cout << "           6.dir                  " << endl;
-	cout << "           7.deletefile                   " << endl;
+	cout << "           7.rm-f                   " << endl;
 	cout << "           8.read                     " << endl;
 	cout << "           9.write                  " << endl;
-	cout << "           10.openfile                  " << endl;
-	cout << "           11.closefile                 " << endl;
+	cout << "           10.open                  " << endl;
+	cout << "           11.close                 " << endl;
 	cout << "           12.format                 " << endl;
 	cout << "           12.logout                 " << endl;
 	cout << "           13.exit                   " << endl;
@@ -77,16 +78,10 @@ int menu(struct PathNode* head)
 {
 
 	char a;
-
 	cout << ">>welcome!" << endl;
-
 	help();
-
 	a = getchar();//防止bug，把之前输入密码是时候的回车接住。
-
 	int flag = 0;
-
-	int codenum;
 	int n;
 
 	string order("");
@@ -96,12 +91,9 @@ int menu(struct PathNode* head)
 
 		order = "";
 		name = "";
-
 		cout << endl << ">>";
-
 		string str("");
 		char c;
-
 		while ((c = cin.get()) != '\n')
 		{
 			str = str + c;
@@ -110,7 +102,6 @@ int menu(struct PathNode* head)
 		if (n == -1)
 		{
 			order = str;
-
 			name = "";
 		}
 		else
@@ -118,124 +109,96 @@ int menu(struct PathNode* head)
 			order = str.substr(0, n);
 			name = str.substr(n + 1, str.length());
 		}
-		//cout<<order<<" "<<name<<" "<<n<<" "<<str.length()<<endl;
 
 		char* inputname;
 		inputname = ChangeStrToChar(name);
 
-		//cout<<"测试："<<inputname<<endl;
-
-		if (order == "createdir")
+		if (order == "mkdir")
 		{
-			codenum = 0;
 			if (name == "")
-				cout << "指令不全" << endl;
+				cout << order << ": 缺少操作数" << endl;
 			else
 				create_directory(inputname, tempLength, userID, tempLimit, head);
-			//cout<<">>成功创建目录"<<name<<endl;
 		}
-		else if (order == "createfile")
+		else if (order == "create")
 		{
-			codenum = 1;
 			if (name == "")
-				cout << "指令不全" << endl;
+				cout << order << ": 缺少操作数" << endl;
 			else
 				createfile(inputname, tempLength, userID, tempLimit, head);
-			//cout<<">>成功创建文件"<<name<<endl;
 		}
-		else if (order == "deletedir")
+		else if (order == "rm-rf")
 		{
-			codenum = 2;
 			if (name == "")
-				cout << "指令不全" << endl;
+				cout << order << ": 缺少操作数" << endl;
 			else
 				delete_dirctory(inputname, head);
-			//cout<<">>成功删除目录"<<name<<endl;
 		}
 		else if (order == "enter")
 		{
-			codenum = 3;
 			if (name == "")
-				cout << "指令不全" << endl;
+				cout << order << ": 缺少操作数" << endl;
 			else
 				Enter(head, inputname);
-			//cout<<">>成功进入目录"<<name<<endl;
 		}
-		else if (order == "cd" && name == "..")
+		else if (order == "cd")
 		{
-			codenum = 4;
 			if (name == "")
-				cout << "指令不全" << endl;
-			else
+				cout << order << ": 缺少操作数" << endl;
+			else if (name == "..")
 				ReturnLastLevel(head);
-			//cout<<">>成功退出目录到上一级"<<endl;
+			else
+				Enter(head, inputname);
 		}
 		else if (order == "dir")
 		{
-			codenum = 5;
 			dir(head);
-			//cout<<">>成功展示目录"<<endl;
 		}
-		else if (order == "deletefile")
+		else if (order == "rm-f")
 		{
-			codenum = 6;
 			if (name == "")
-				cout << "指令不全" << endl;
+				cout << order << ": 缺少操作数" << endl;
 			else
 				deletefile(inputname, head);
-			//cout<<">>成功删除文件"<<name<<endl;
 		}
 		else if (order == "read")
 		{
-			codenum = 7;
 			if (name == "")
-				cout << "指令不全" << endl;
+				cout << order << ": 缺少操作数" << endl;
 			else
 				readfile(inputname, head);
-			//cout<<">>成功读取文件"<<name<<endl;
 		}
 		else if (order == "write")
 		{
-			codenum = 8;
 			if (name == "")
-				cout << "指令不全" << endl;
+				cout << order << ": 缺少操作数" << endl;
 			else
 			{
-				//char *newcontent = "";
-				char* newcontent = new(char);
-				cin.get(newcontent, 10);
-				//cin>>newcontent;
-				a = getchar();
+				char* newcontent = gettext();
 				writefile(inputname, newcontent, head);
 			}
-			//cout<<">>成功写入文件"<<name<<endl;
 		}
-		else if (order == "openfile")
+		else if (order == "open")
 		{
 			if (name == "")
-				cout << "指令不全" << endl;
+				cout << order << ": 缺少操作数" << endl;
 			else
 				openfile(inputname, head);
-			//cout<<">>成功打开文件"<<name<<endl;
 		}
-		else if (order == "closefile")
+		else if (order == "close")
 		{
 			if (name == "")
-				cout << "指令不全" << endl;
+				cout << order << ": 缺少操作数" << endl;
 			else
 				closefile(inputname, head);
-			//cout<<">>暂时无法关闭，请见谅"<<name<<endl;
 		}
 		else if (order == "format")
 		{
 			format();
-			//cout<<"成功格式化"<<name<<endl;
 		}
 		else if (order == "logout" && name == "")
 		{
-			codenum = 13;
 			int q = 0;
-
 			while (q == 0)
 			{
 				cout << ">>logout and back to login(y/n)?" << endl;
@@ -261,7 +224,6 @@ int menu(struct PathNode* head)
 		}
 		else if (order == "exit" && name == "")//退出系统
 		{
-			codenum = 15;
 			int p = 0;
 			while (p == 0)
 			{
@@ -313,7 +275,7 @@ int menu(struct PathNode* head)
 		else if (order == "copy")
 		{
 			if (name == "")
-				cout << "指令不全" << endl;
+				cout << order << ": 缺少操作数" << endl;
 			else
 				copyfile(head, inputname);
 			//cout<<">>暂时无法关闭，请见谅"<<name<<endl;
@@ -321,7 +283,7 @@ int menu(struct PathNode* head)
 		else if (order == "cut")
 		{
 			if (name == "")
-				cout << "指令不全" << endl;
+				cout << order << ": 缺少操作数" << endl;
 			else
 				cutfile(head, inputname);
 			//cout<<">>暂时无法关闭，请见谅"<<name<<endl;
@@ -394,7 +356,6 @@ int checkname(string a)//检查用户是否存在
 				cout << "user exists" << endl;
 				flag = 1;
 				break;
-
 			}
 		}
 
@@ -423,22 +384,14 @@ int checkpassword(string b, int n)//该用户存在，检查密码是否正确
 	}
 	else
 	{
-
-
 		for (i = 0; i < n, getline(test, str); i++)//code和username行数相对应，要找到用户名对应密码的那一行，先逐行寻找
 		{
-
-
 			if (str == b)
 			{
 				if (i + 1 == n)//在文本中找到了密码串，但是要保证是username在user.txt中所排列位置的那一行，如果不是，说明密码错误
 				{
-
-
 					flag1 = 1;
-
 					cout << "password correct!" << endl;
-
 					codecorrect = 1;
 					break;
 				}
@@ -509,4 +462,31 @@ char* ChangeStrToChar(string InputString)
 		InputChar[i] = InputString[i];
 	InputChar[i] = '\0';//将最后一个字符后面的元素置空，否则可能出现奇怪的错误
 	return InputChar;
+}
+
+char* gettext()
+{
+	char c = ' ';
+	char* newcontent = new(char);
+	/*cin.get(newcontent, 10);
+	a = getchar();*/
+	string newcontent_s = "";
+	//getline(cin, newcontent_s);
+	while (c = _getch())
+	{
+		if (c == 27)
+			break;
+		else if (c == 13)
+		{
+			cout << endl;
+			newcontent_s += '\n';
+		}
+		else
+		{
+			cout << c;
+			newcontent_s += c;
+		}
+	}
+	newcontent = ChangeStrToChar(newcontent_s);
+	return newcontent;
 }

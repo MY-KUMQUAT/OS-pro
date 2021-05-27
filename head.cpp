@@ -18,4 +18,4 @@ int new_inode_limit = -1;  //文件读写权限
 int new_inode_userID = -1;   //用户标识符
 char new_content[size_OF_block] = "";
 int paste_flag = -1;
-//struct PathNode *paste_head;
+

@@ -7,7 +7,6 @@ struct block storage[num_OF_storage];
 struct super_block super_block;
 struct dir_file_block d_or_f[num_OF_datablock];
 struct inode inodes[num_OF_inode];
-struct command cmd[17];
 struct PathNode* paste_head;
 
 int main()

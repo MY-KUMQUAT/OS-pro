@@ -2,6 +2,7 @@
 
 void format()  //格式化，初始化
 {
+	int m;
 	super_block.sbk_num = num_OF_superblock;
 	for (int i = 0; i < num_OF_superblock; i++)  //初始化超级块
 	{
@@ -23,19 +24,15 @@ void format()  //格式化，初始化
 
 	for (int i = 1; i < num_OF_datablock; i++)  //目录及文件区域初始化
 	{
-		strcpy(d_or_f[i].txt_filename, "");
-
 		d_or_f[i].df_inum = -1;
 		d_or_f[i].countcount = 0;
-
 		strcpy(d_or_f[i].dir_directoryname, "");
 	}
 
-	//Initialize root
+	//初始化根目录
 	d_or_f[0].df_inum = -1;
 	d_or_f[0].countcount = 0;
 	strcpy(d_or_f[0].dir_directoryname, "root");
-	//Initialize finished;
 
 	for (int i = 0; i < num_OF_storage; i++)
 	{
@@ -51,7 +48,6 @@ void format()  //格式化，初始化
 		}
 	}
 
-	int m;
 	for (int i = 0; i < num_OF_datablock; i++)  //成组链接法组织空闲块
 	{
 		if ((i + 1) % 50 == 0)
@@ -61,7 +57,7 @@ void format()  //格式化，初始化
 			{
 				if (m < (num_OF_storage + 1))
 				{
-					storage[i].blk_free[j] = m;  //这是下一组的空闲地址
+					storage[i].blk_free[j] = m;  //下一组的空闲地址
 					storage[i].blk_num++;  //下一组的空闲块的个数
 					m++;
 				}
@@ -91,6 +87,6 @@ void format()  //格式化，初始化
 		ADDRbuffer[n] = -1;
 	}
 
-	cout << "format finished." << endl;
-	cout << "welcome to real-fake UNIX file system. Loading......" << endl;
+	cout << "格式化完成！" << endl;
+	cout << "OS-pro文件系统" << endl;
 }

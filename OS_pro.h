@@ -4,12 +4,13 @@
 #include <iostream>
 #include <windows.h>
 #include <malloc.h>
+#include <regex>
 
 using namespace std;
 
 #define num_OF_superblock  50  //超级块中的空闲块数
 #define num_OF_inode  512  //i节点个数
-#define length_OF_fileaddress  100  //文件长度100字节
+#define length_OF_fileaddress  100  //文件长度100
 #define num_OF_datablock  512  //数据磁盘块共计512块
 #define num_OF_storage  550  //系统总大小
 #define size_OF_block  512  //每个磁盘块大小512B
@@ -32,7 +33,6 @@ void delete_dirctory(char directory[], struct PathNode* head);
 void recycledelete(struct PathNode* head, char directory[]);
 void release(int iNode);
 void clearADDRbuffer();
-void loadNewFreeGroup(int address);
 void openfile(char* filename, struct PathNode* head);
 void closefile(char filename[], struct PathNode* head);
 void writefile(char* filename, char* newcontent, struct PathNode* head);
@@ -40,6 +40,7 @@ void readfile(char* filename, struct PathNode* head);
 void copyfile(struct PathNode* head, char filename[]);
 void pastefile(struct PathNode* head);
 void cutfile(struct PathNode* head, char filename[]);
+void searchfile(char* filename, PathNode* head);
 
 
 extern int openfile_array[maxnum_OF_openfile];  //可同时打开文件的数组
@@ -48,8 +49,6 @@ extern int filetype;  //文件类型，0为目录，1为文件
 extern int ADDRbuffer[size_OF_fileADDRbuffer];  //文件地址缓冲区
 extern char current_directory[20];  //根目录
 
-//extern int inode_inum;  //i节点号
-//extern int inode_fileaddress[length_OF_fileaddress];  //文件的物理块号
 extern char new_filename[14];
 extern int new_inode_filetype;  //文件类型
 extern int new_inode_filelength;  //文件长度
@@ -90,7 +89,6 @@ struct dir_file_block
 	int countcount;//记录目录保存元素数量，初值为0
 	char dir_directoryname[10];  //目录名称
 	int df_inum;  //目录或文件的i节点号
-	char txt_filename[10];  //文件名称
 };
 
 extern struct dir_file_block d_or_f[num_OF_datablock];
@@ -107,10 +105,4 @@ struct inode  //i节点
 
 extern struct inode inodes[num_OF_inode];
 
-struct command  //命令行
-{
-	char cmd_cmdname[10];  //命令名称
-};
-
-extern struct command cmd[17];
 

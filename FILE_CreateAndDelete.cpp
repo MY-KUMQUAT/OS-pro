@@ -19,7 +19,6 @@ void createfile(char filename[], int length, int userID, int limit, struct PathN
 			if (d_or_f[i].df_inum == -1)
 			{
 				d_or_f[i].df_inum = i;
-				strcpy(d_or_f[i].txt_filename, filename);
 				inodes[i].inode_inum = i;
 				inodes[i].inode_filetype = 1;  //文件类型，0为目录文件，1为普通文件
 				inodes[i].inode_filelength = length;
@@ -85,7 +84,6 @@ void deletefile(char* filename, struct PathNode* head)
 			{
 				inodes[temp].inode_fileaddress[j] = -1;
 			}
-			strcpy(d_or_f[a].txt_filename, "");
 
 			strcpy(d_or_f[a].dir_list[i].filename, "");  //初始化目录列表中的所在位置
 			d_or_f[a].dir_list[i].inode = -1;

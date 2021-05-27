@@ -134,13 +134,34 @@ int menu(struct PathNode* head)
 			else
 				delete_dirctory(inputname, head);
 		}
-		else if (order == "enter")
+		//管理员指令
+		else if (order == "a") //分配空闲块
 		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else
-				Enter(head, inputname);
+			allocation(1);
 		}
+		else if (order == "r") //回收缓冲区空闲块
+		{
+			recycling(1);
+		}
+		else if (order == "b") //写缓冲
+		{
+			int temp, i;
+			int dir_a = 0;
+			for (i = 0; i < d_or_f[dir_a].countcount; i++)
+			{
+				
+				temp = d_or_f[dir_a].dir_list[i].inode;
+				if (inodes[temp].inode_userID == -1) continue;
+				inodes[temp].inode_userID = -1;
+				inodes[temp].inode_limit = -1;
+				for (int j = 0; j < inodes[temp].inode_filelength; j++)
+				{
+					ADDRbuffer[j] = inodes[temp].inode_fileaddress[j];
+				}
+				break;
+			}
+		}
+		//end
 		else if (order == "cd")
 		{
 			if (name == "")
@@ -291,6 +312,13 @@ int menu(struct PathNode* head)
 		else if (order == "paste")
 		{
 			pastefile(head);
+		}
+		else if (order == "find")
+		{
+			if (name == "")
+				cout << order << ": 缺少操作数" << endl;
+			else
+				searchfile(inputname,head);
 		}
 		else
 			cout << ">>指令不存在,请重新输入" << endl;
@@ -464,6 +492,16 @@ char* ChangeStrToChar(string InputString)
 	return InputChar;
 }
 
+string ChangeCharToStr(char* InputChar)
+{
+	string InputString;
+	for (int k = 0; InputChar[k] != '\0'; k++)
+	{
+		InputString += InputChar[k];
+	}
+	return InputString;
+}
+
 char* gettext()
 {
 	char c = ' ';
@@ -490,3 +528,4 @@ char* gettext()
 	newcontent = ChangeStrToChar(newcontent_s);
 	return newcontent;
 }
+

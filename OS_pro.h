@@ -40,7 +40,9 @@ void readfile(char* filename, struct PathNode* head);
 void copyfile(struct PathNode* head, char filename[]);
 void pastefile(struct PathNode* head);
 void cutfile(struct PathNode* head, char filename[]);
-void searchfile(char* filename, PathNode* head);
+void mv(struct PathNode* head, string name);
+void searchfile(char* filename, PathNode* head, int depth);
+void chdir(struct PathNode* head, string name);
 
 
 extern int openfile_array[maxnum_OF_openfile];  //可同时打开文件的数组
@@ -58,6 +60,9 @@ extern int new_inode_userID;  //用户标识符
 extern char new_content[size_OF_block];
 extern int paste_flag;
 extern struct PathNode* paste_head;
+
+extern int file_found;  //找到文件数
+extern int recursion_flag;  //搜索深度，递归标记
 
 struct block  //每块
 {

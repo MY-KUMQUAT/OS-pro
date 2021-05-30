@@ -2,6 +2,60 @@
 #include "FullPath.h"
 #include "login.h"
 
+void mv(struct PathNode* head, string name)
+{
+	string from_name, to_name;
+	string file_from_name, file_to_name;
+	string dir_from_name, dir_to_name;
+	int n, flag, from_name_pos, to_name_pos;
+	n = name.find(' ');
+	if (n == -1)
+	{
+		cout << ">>÷∏¡Ó∏Ò Ω¥ÌŒÛ" << endl;
+		return;
+	}
+	else
+	{
+		from_name = name.substr(0, n);
+		to_name = name.substr(n + 1, name.length());
+		from_name_pos = from_name.find_last_of('/');
+		//to_name_pos = to_name.find_last_of('/');
+	}
+	if (from_name_pos == -1)
+	{
+		file_from_name = from_name;
+		dir_from_name = '.';
+	}
+	else
+	{
+		file_from_name = from_name.substr(from_name_pos + 1, name.length());
+		dir_from_name = from_name.substr(0, from_name_pos);
+	}
+	/*if (to_name_pos == -1)
+	{
+		file_to_name = to_name;
+		dir_to_name = '.';
+	}
+	else
+	{
+		file_to_name = to_name.substr(to_name_pos + 1, name.length());
+		dir_to_name = to_name.substr(0, to_name_pos);
+	}*/
+	chdir(head, dir_from_name);
+	cutfile(head, ChangeStrToChar(file_from_name));
+	//chdir(head, dir_to_name);
+	chdir(head, dir_to_name);
+	pastefile(head);
+	
+	cout << from_name << endl;
+	cout << to_name << endl;
+}
+
+void cp(struct PathNode* head, char name[])
+{
+
+}
+
 void copyfile(struct PathNode* head, char filename[])
 {
 	Copy_LinkedLisk(head);

@@ -1,4 +1,4 @@
-#include<iostream>
+ï»¿#include<iostream>
 #include<string>
 #include<cstdlib>
 #include<windows.h>
@@ -10,83 +10,84 @@ using namespace std;
 class Tetris
 {
 private:
-	int rank;				//ÓÎÏ·ÄÑ¶ÈµÈ¼¶
-	int score;				// µÃ·Ö
-	int id;					//Í¼ĞÎID
-	int point[2];			//Á½»ùµã
-	int top;					//×î¸ßµã¸ß¶È
+	int rank;				//æ¸¸æˆéš¾åº¦ç­‰çº§
+	int score;				// å¾—åˆ†
+	int id;					//å›¾å½¢ID
+	int point[2];			//ä¸¤åŸºç‚¹
+	int top;					//æœ€é«˜ç‚¹é«˜åº¦
 public:
 	Tetris();
-	void Welocme();			//Ê×½çÃæ
-	void DrawMap();			//ÓÎÏ·½çÃæ
-	void SetColor(int);		//¿ØÖÆÑÕÉ«
-	void Draw(int, int, int);		//»­Í¼ĞÎ
-	void Run();				//ÔËĞĞÓÎÏ·
-	void ReDraw(int, int, int);			//Çå³ıÍ¼ĞÎ
+	void Welocme();			//é¦–ç•Œé¢
+	void DrawMap();			//æ¸¸æˆç•Œé¢
+	void SetColor(int);		//æ§åˆ¶é¢œè‰²
+	void Draw(int, int, int);		//ç”»å›¾å½¢
+	void Run();				//è¿è¡Œæ¸¸æˆ
+	void ReDraw(int, int, int);			//æ¸…é™¤å›¾å½¢
 	bool Judge(int, int, int);
-	void Turn(int);				//Ğı×ª
-	void Updata();				// ¸üĞÂ½çÃæ
-	void Pause();				//ÓÎÏ·ÔİÍ£
+	void Turn(int);				//æ—‹è½¬
+	void Updata();				// æ›´æ–°ç•Œé¢
+	void Pause();				//æ¸¸æˆæš‚åœ
 	void Input_score();
 };
 
-const int sharp[19][8] =					//×é³ÉÍ¼ĞÎµÄ¸÷¸öµãµÄ¸÷¸ö×ø±ê£¬ÏÈ×İºóºá
+const int sharp[19][8] =					//ç»„æˆå›¾å½¢çš„å„ä¸ªç‚¹çš„å„ä¸ªåæ ‡ï¼Œå…ˆçºµåæ¨ª
 {
-//ÌõĞÎ
-{0,0,1,0,2,0,3,0},{0,0,0,1,0,2,0,3},     
-//·½¿é
-{0,0,1,0,0,1,1,1},  
-//LĞÎ
-{0,0,1,0,1,1,1,2},{0,1,1,1,2,0,2,1},{0,0,0,1,0,2,1,2},{0,0,0,1,1,0,2,0},
-//JĞÎ
-{1,0,1,1,1,2,0,2},{0,0,0,1,1,1,2,1},{0,0,0,1,0,2,1,0},{0,0,1,0,2,0,2,1},
-//TĞÎ
-{0,1,0,0,0,2,1,1},{0,1,1,1,2,1,1,2},{0,1,1,1,1,0,1,2},{0,1,1,0,1,1,2,1},
-//SĞÎ
-{0,1,1,1,0,2,1,0},{0,1,1,0,1,1,2,0},
-//ZĞÎ
-{0,0,0,1,1,1,1,2},{0,1,1,0,1,1,2,0}
-
+	//æ¡å½¢
+	{0,0,1,0,2,0,3,0},{0,0,0,1,0,2,0,3},
+	//æ–¹å—
+	{0,0,1,0,0,1,1,1},
+	//Lå½¢
+	{0,0,1,0,1,1,1,2},{0,1,1,1,2,0,2,1},{0,0,0,1,0,2,1,2},{0,0,0,1,1,0,2,0},
+	//Jå½¢
+	{0,0,0,1,0,2,1,0},{0,0,1,0,2,0,2,1},{1,0,1,1,1,2,0,2},{0,0,0,1,1,1,2,1},
+	//Tå½¢
+	{0,0,1,0,2,0,1,1},{0,1,1,0,1,1,1,2},{0,1,1,0,1,1,2,1},{0,0,0,1,0,2,1,1},
+	//Så½¢
+	{1,0,2,0,0,1,1,1},{0,0,0,1,1,1,1,2},
+	//Zå½¢
+	{0,0,1,0,1,1,2,1},{1,0,0,1,1,1,0,2}
 };
 
 const int high[15] = { 4,1,2,2,3,2,3,2,3,2,3,2,3,2,3 };
 int map[28][16];
-//ÌõĞÎ
+//æ¡å½¢
 #define a1  0			
 #define a2  1
 
-// ·½¿é
+// æ–¹å—
 #define b 2					
 
-//LĞÎ
+//Lå½¢
 #define c1 3					
 #define c2 4
 #define c3 5
 #define c4 6
 
-//JĞÎ
+//Jå½¢
 #define d1 7					
 #define d2 8 
 #define d3 9
 #define d4 10
 
-//TĞÎ
-#define t1 11
-#define t2 12
-#define t3 13
-#define t4 14
-//SĞÎ
-#define s1 15
-#define s2 16
-//ZĞÎ
-#define z1 17
-#define z2 18
+//Tå½¢
+#define e1 11					
+#define e2 12 
+#define e3 13
+#define e4 14
+
+//Så½¢
+#define f1  15			
+#define f2  16
+
+//Zå½¢
+#define g1  17			
+#define g2  18
 
 
 
 
 
-Tetris::Tetris()				//¹¹Ôìº¯Êı£¬ ³õÊ¼»¯¸÷¸öÖµ
+Tetris::Tetris()				//æ„é€ å‡½æ•°ï¼Œ åˆå§‹åŒ–å„ä¸ªå€¼
 {
 	point[0] = 0;
 	point[1] = 5;
@@ -94,59 +95,61 @@ Tetris::Tetris()				//¹¹Ôìº¯Êı£¬ ³õÊ¼»¯¸÷¸öÖµ
 	top = 25;
 }
 
-void Tetris::Turn(int num)				//Ğı×ªº¯Êı
+void Tetris::Turn(int num)				//æ—‹è½¬å‡½æ•°
 {
 	/*
-	Í¨¹ıÌõĞÎĞı×ªµÄ·½Ê½Íê³ÉÆäËûĞÎ×´µÄĞı×ª
-	
-	ÓĞĞËÈ¤µÄÍ¬Ñ§Ò²¿ÉÒÔÍ¨¹ıÆäËû·½·¨Íê³É´Ë¹¦ÄÜ
+	é€šè¿‡æ¡å½¢æ—‹è½¬çš„æ–¹å¼å®Œæˆå…¶ä»–å½¢çŠ¶çš„æ—‹è½¬
+
+	æœ‰å…´è¶£çš„åŒå­¦ä¹Ÿå¯ä»¥é€šè¿‡å…¶ä»–æ–¹æ³•å®Œæˆæ­¤åŠŸèƒ½
 	*/
 	switch (num)
 	{
-	//ÌõĞÎĞı×ª
-	case a1: id = a2; break;					
+		//æ¡å½¢æ—‹è½¬
+	case a1: id = a2; break;
 	case a2: id = a1; break;
 
-	//·½¿éĞı×ª
+		//æ–¹å—æ—‹è½¬
 	case b: id = b; break;
-	//LĞÎĞı×ª
+
+		//Lå½¢æ—‹è½¬
 	case c1: id = c2; break;
-	case c2: id = c3; break;
-	case c3:id = c4; break;
-	case c4: id = c1; break;
-	//JĞÍĞı×ª
+	case c2: id = c1; break;
+
+		//Jå‹æ—‹è½¬
 	case d1: id = d2; break;
 	case d2: id = d3; break;
-	case d3:id = d4; break;
+	case d3: id = d4; break;
 	case d4: id = d1; break;
-	//TĞÎĞı×ª
-	case t1: id = t2; break;
-	case t2: id = t3; break;
-	case t3:id = t4; break;
-	case t4: id = t1; break;
-	//SĞÎĞı×ª
-	case s1:id = s2; break;
-	case s2: id = s1; break;
-	//ZĞÎĞı×ª
-	case z1:id = z2; break;
-	case z2: id = z1; break;
 
-	
+		//Tå½¢æ—‹è½¬
+	case e1: id = e2; break;
+	case e2: id = e3; break;
+	case e3: id = e4; break;
+	case e4: id = e1; break;
+
+		//Så½¢æ—‹è½¬
+	case f1: id = f2; break;
+	case f2: id = f1; break;
+
+		//Zå½¢æ—‹è½¬
+	case g1: id = g2; break;
+	case g2: id = g1; break;
+
 	}
 }
 
-void SetPos(int i, int j)			//¿ØÖÆ¹â±êÎ»ÖÃ£¬ ÁĞ£¬ ĞĞ
+void SetPos(int i, int j)			//æ§åˆ¶å…‰æ ‡ä½ç½®ï¼Œ åˆ—ï¼Œ è¡Œ
 {
 	COORD pos = { i,j };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
 
-void Tetris::Pause()				// ÔİÍ£º¯Êı
+void Tetris::Pause()				// æš‚åœå‡½æ•°
 {
 	SetPos(32, 10);
-	cout << "ÓÎÏ·ÔİÍ£!" << endl;
+	cout << "æ¸¸æˆæš‚åœ!" << endl;
 	SetPos(30, 11);
-	cout << "ÄãµÄ·ÖÊıÎª " << score;
+	cout << "ä½ çš„åˆ†æ•°ä¸º " << score;
 	char temp;
 	while (1)
 	{
@@ -161,13 +164,13 @@ void Tetris::Pause()				// ÔİÍ£º¯Êı
 		if (temp == 32)
 			break;
 	}
-	SetPos(32, 10);					// Çå³ıÔİÍ£Ê±ÏÔÊ¾µÄĞÅÏ¢
+	SetPos(32, 10);					// æ¸…é™¤æš‚åœæ—¶æ˜¾ç¤ºçš„ä¿¡æ¯
 	cout << "         ";
 	SetPos(30, 11);
 	cout << "              ";
 }
 
-void Tetris::Updata()					//¸üĞÂº¯Êı
+void Tetris::Updata()					//æ›´æ–°å‡½æ•°
 {
 	int i, flag;
 	int nx, ny;
@@ -177,40 +180,40 @@ void Tetris::Updata()					//¸üĞÂº¯Êı
 		ny = point[1] + sharp[id][i * 2 + 1];
 		SetPos((ny + 1) * 2, nx + 1);
 		SetColor(0);
-		cout << "¡ö";
-		map[nx][ny] = 1;					//½çÃæ¸÷¸öµãÊÇ·ñÎª¿ÕµÄ¸üĞÂ
+		cout << "â– ";
+		map[nx][ny] = 1;					//ç•Œé¢å„ä¸ªç‚¹æ˜¯å¦ä¸ºç©ºçš„æ›´æ–°
 	}
 
 	if (point[0] < top)
-		top = point[0];					//×î¸ßµãµÄ¸üĞÂ
+		top = point[0];					//æœ€é«˜ç‚¹çš„æ›´æ–°
 
-	for (i = point[0]; i < point[0] + high[id]; i++)			//Ïû³ıĞĞ
+	for (i = point[0]; i < point[0] + high[id]; i++)			//æ¶ˆé™¤è¡Œ
 	{
-		//½«flag¸³ÖµÎª1£¬flagÎª1±íÊ¾Ä³Ò»ĞĞÂú£¬0±íÊ¾Î´Âú¡£
+		//å°†flagèµ‹å€¼ä¸º1ï¼Œflagä¸º1è¡¨ç¤ºæŸä¸€è¡Œæ»¡ï¼Œ0è¡¨ç¤ºæœªæ»¡ã€‚
 		flag = 1;
-		
-		// map[i][j] == 0±íÊ¾ÔÚµØÍ¼µÄµÚiĞĞ£¬µÚjÁĞµÄµØ·½Ã»ÓĞ·½¿é£¬Êä³öµÄĞÎÊ½Îª"  "
-		// map[i][j] == 1±íÊ¾ÔÚµØÍ¼µÄµÚiĞĞ£¬µÚjÁĞµÄµØ·½ÓĞ·½¿é£¬Êä³öµÄĞÎÊ½Îª"¡ö"
-		
-		//×¢£ºÓÎÏ·ÇøµÄÁĞÊıÎª13ÁĞ
 
-		//ÅĞ¶ÏÄ³Ò»ĞĞÊÇ·ñÎªÂú
+		// map[i][j] == 0è¡¨ç¤ºåœ¨åœ°å›¾çš„ç¬¬iè¡Œï¼Œç¬¬jåˆ—çš„åœ°æ–¹æ²¡æœ‰æ–¹å—ï¼Œè¾“å‡ºçš„å½¢å¼ä¸º"  "
+		// map[i][j] == 1è¡¨ç¤ºåœ¨åœ°å›¾çš„ç¬¬iè¡Œï¼Œç¬¬jåˆ—çš„åœ°æ–¹æœ‰æ–¹å—ï¼Œè¾“å‡ºçš„å½¢å¼ä¸º"â– "
+
+		//æ³¨ï¼šæ¸¸æˆåŒºçš„åˆ—æ•°ä¸º13åˆ—
+
+		//åˆ¤æ–­æŸä¸€è¡Œæ˜¯å¦ä¸ºæ»¡
 		/*
-		ÇëÔÚÏÂ·½²¹È«ÅĞ¶ÏÊÇ·ñÎªÂú¹¦ÄÜ´úÂë
+		è¯·åœ¨ä¸‹æ–¹è¡¥å…¨åˆ¤æ–­æ˜¯å¦ä¸ºæ»¡åŠŸèƒ½ä»£ç 
 		*/
 
 
 
-		//µ±flagÎª1Ê±£¬ÏûĞĞ
+		//å½“flagä¸º1æ—¶ï¼Œæ¶ˆè¡Œ
 		if (flag == 1)
 		{
 			/*
-			ÇëÔÚÏÂ·½²¹È«ÏûĞĞ¹¦ÄÜ´úÂë
+			è¯·åœ¨ä¸‹æ–¹è¡¥å…¨æ¶ˆè¡ŒåŠŸèƒ½ä»£ç 
 			*/
 
 
 
-			//¼ÆËãµÃ·Ö
+			//è®¡ç®—å¾—åˆ†
 			score += 10;
 			Input_score();
 		}
@@ -221,27 +224,27 @@ void Tetris::Input_score()
 {
 	SetColor(3);
 	SetPos(30, 19);
-	cout << "µÃ·Ö: " << score;
+	cout << "å¾—åˆ†: " << score;
 }
 
-void Tetris::Welocme()			//»¶Ó­½çÃæ
+void Tetris::Welocme()			//æ¬¢è¿ç•Œé¢
 {
 	SetColor(1);
 	char x;
 	while (1)
 	{
 		system("cls");
-		cout << "¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö" << endl;
-		cout << "		¶íÂŞË¹·½¿é		" << endl;
-		cout << "¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö" << endl;
-		cout << "		²Ù×÷·½Ê½£º" << endl;
-		cout << "		¡ü - Ğı×ª" << endl;
-		cout << "		¡ı - ¼ÓËÙÏÂÒÆ" << endl;
-		cout << "		¡û - ×óÒÆ" << endl;
-		cout << "		¡ú - ÓÒÒÆ" << endl;
-		cout << "		¿Õ¸ñ - ÔİÍ£" << endl;
-		cout << "¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö¡ö" << endl;
-		cout << "¡ö °´1¡ª3Ñ¡ÔñÄÑ¶È¡ö" << endl;
+		cout << "â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– " << endl;
+		cout << "		ä¿„ç½—æ–¯æ–¹å—		" << endl;
+		cout << "â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– " << endl;
+		cout << "		æ“ä½œæ–¹å¼ï¼š" << endl;
+		cout << "		â†‘ - æ—‹è½¬" << endl;
+		cout << "		â†“ - åŠ é€Ÿä¸‹ç§»" << endl;
+		cout << "		â† - å·¦ç§»" << endl;
+		cout << "		â†’ - å³ç§»" << endl;
+		cout << "		ç©ºæ ¼ - æš‚åœ" << endl;
+		cout << "â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– " << endl;
+		cout << "â–  æŒ‰1â€”3é€‰æ‹©éš¾åº¦â– " << endl;
 		SetPos(20, 10);
 		x = getchar();
 		if (x <= '9' && x >= '0')
@@ -252,7 +255,7 @@ void Tetris::Welocme()			//»¶Ó­½çÃæ
 	}
 }
 
-void Tetris::SetColor(int color_num)			//ÉèÖÃÑÕÉ«
+void Tetris::SetColor(int color_num)			//è®¾ç½®é¢œè‰²
 {
 	int n;
 	switch (color_num)
@@ -266,58 +269,58 @@ void Tetris::SetColor(int color_num)			//ÉèÖÃÑÕÉ«
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), n);
 }
 
-void Tetris::DrawMap()				//»­ÓÎÏ·Ê±½çÃæ
+void Tetris::DrawMap()				//ç”»æ¸¸æˆæ—¶ç•Œé¢
 {
 	int i;
 	SetColor(0);
 
-	for (i = 0; i < 24; i++)		//¿í24¸ñ
+	for (i = 0; i < 24; i++)		//å®½24æ ¼
 	{
 		SetPos(i * 2, 0);
-		cout << "¡ö";
+		cout << "â– ";
 		SetPos(i * 2, 26);
-		cout << "¡ö";
+		cout << "â– ";
 	}
 
-	for (i = 0; i < 26; i++)		//¸ß26¸ñ
+	for (i = 0; i < 26; i++)		//é«˜26æ ¼
 	{
 		SetPos(0, i);
-		cout << "¡ö";
+		cout << "â– ";
 		SetPos(28, i);
-		cout << "¡ö";
+		cout << "â– ";
 		SetPos(46, i);
-		cout << "¡ö";
+		cout << "â– ";
 	}
 
 	for (i = 14; i < 24; i++)
 	{
 		SetPos(i * 2, 16);
-		cout << "¡ö";
+		cout << "â– ";
 	}
 
 	SetColor(3);
 	Input_score();
 	SetPos(30, 21);
-	cout << "ÄÑ¶ÈµÈ¼¶: " << rank;
+	cout << "éš¾åº¦ç­‰çº§: " << rank;
 	SetPos(32, 2);
-	cout << "ÏÂÒ»Í¼ĞÎ";
+	cout << "ä¸‹ä¸€å›¾å½¢";
 }
 
-void Tetris::Draw(int x, int y, int num)				//»­Í¼ĞÎ
+void Tetris::Draw(int x, int y, int num)				//ç”»å›¾å½¢
 {
 	int nx, ny;
 
-	for (int i = 0; i < 4; i++) 
+	for (int i = 0; i < 4; i++)
 	{
 		nx = x + sharp[num][2 * i];
 		ny = y + sharp[num][2 * i + 1];
 		SetPos((ny + 1) * 2, nx + 1);
 		SetColor(i + 1);
-		cout << "¡ö";
+		cout << "â– ";
 	}
 }
 
-void Tetris::ReDraw(int x, int y, int num)				//Îª¸üĞÂÍ¼ĞÎµÄÎ»ÖÃÇå³ıÍ¼ĞÎ
+void Tetris::ReDraw(int x, int y, int num)				//ä¸ºæ›´æ–°å›¾å½¢çš„ä½ç½®æ¸…é™¤å›¾å½¢
 {
 	int nx, ny;
 
@@ -330,8 +333,8 @@ void Tetris::ReDraw(int x, int y, int num)				//Îª¸üĞÂÍ¼ĞÎµÄÎ»ÖÃÇå³ıÍ¼ĞÎ
 	}
 }
 
-bool Tetris::Judge(int x, int y, int num)				//ÅĞ¶¨ÔÚx, y ËùÖ¸Î»ÖÃÊÇ·ñ¿É»­±àºÅÎª
-{													//num µÄÍ¼ĞÎ£¬ Èô²»¿É»­Ôò·´»Øtrue
+bool Tetris::Judge(int x, int y, int num)				//åˆ¤å®šåœ¨x, y æ‰€æŒ‡ä½ç½®æ˜¯å¦å¯ç”»ç¼–å·ä¸º
+{													//num çš„å›¾å½¢ï¼Œ è‹¥ä¸å¯ç”»åˆ™åå›true
 	int nx, ny;
 	for (int i = 0; i < 4; i++)
 	{
@@ -343,15 +346,13 @@ bool Tetris::Judge(int x, int y, int num)				//ÅĞ¶¨ÔÚx, y ËùÖ¸Î»ÖÃÊÇ·ñ¿É»­±àºÅÎª
 	return false;
 }
 
-void Tetris::Run()					//ÔËĞĞÓÎÏ·
+void Tetris::Run()					//è¿è¡Œæ¸¸æˆ
 {
 	int next_id;
 	srand((int)time(0));
 
-	/*id = rand() % 15;
-	next_id = rand() % 15;*/
-	id = rand() % 19;
-	next_id = rand() % 19;
+	id = rand() % 15;
+	next_id = rand() % 15;
 
 	Draw(point[0], point[1], id);
 	Draw(5, 16, next_id);
@@ -365,14 +366,14 @@ void Tetris::Run()					//ÔËĞĞÓÎÏ·
 		count = 50;
 	else
 		count = 5;
-	int i = 0;  //²»Í¬µÈ¼¶¶ÔÓ¦²»Í¬count
+	int i = 0;  //ä¸åŒç­‰çº§å¯¹åº”ä¸åŒcount
 
 	while (1)
 	{
-		if (!(i < count))				//i Óë count ÓÃÓÚ¿ØÖÆÊ±¼ä
+		if (!(i < count))				//i ä¸ count ç”¨äºæ§åˆ¶æ—¶é—´
 		{
 			i = 0;
-			if (Judge(point[0] + 1, point[1], id))			//ÔÚÄ³Ò»Î»ÖÃ²»ÄÜÏÂÂäµÄ»°
+			if (Judge(point[0] + 1, point[1], id))			//åœ¨æŸä¸€ä½ç½®ä¸èƒ½ä¸‹è½çš„è¯
 			{
 				Updata();
 				id = next_id;
@@ -388,14 +389,14 @@ void Tetris::Run()					//ÔËĞĞÓÎÏ·
 				{
 					system("cls");
 					SetPos(20, 10);
-					cout << "ÓÎÏ·½áÊø£¡" << endl;
+					cout << "æ¸¸æˆç»“æŸï¼" << endl;
 					SetPos(20, 11);
-					cout << "ÄãµÄ·ÖÊıÎª " << score << endl;
+					cout << "ä½ çš„åˆ†æ•°ä¸º " << score << endl;
 					system("pause");
 					exit(1);
 				}
 			}
-			else					//¼ÌĞøÏÂÂä
+			else					//ç»§ç»­ä¸‹è½
 			{
 				ReDraw(point[0], point[1], id);
 				point[0]++;
@@ -403,7 +404,7 @@ void Tetris::Run()					//ÔËĞĞÓÎÏ·
 			}
 		}
 
-		if (_kbhit())				//¼üÅÌÊäÈëÖµÊ± 
+		if (_kbhit())				//é”®ç›˜è¾“å…¥å€¼æ—¶ 
 		{
 			int key, key2;
 			key = _getch();
@@ -411,7 +412,7 @@ void Tetris::Run()					//ÔËĞĞÓÎÏ·
 			{
 				key2 = _getch();
 
-				if (key2 == 72)			//°´ÏòÉÏ·½Ïò¼üÊ±
+				if (key2 == 72)			//æŒ‰å‘ä¸Šæ–¹å‘é”®æ—¶
 				{
 					int temp = id;
 					Turn(id);
@@ -420,7 +421,7 @@ void Tetris::Run()					//ÔËĞĞÓÎÏ·
 					ReDraw(point[0], point[1], temp);
 					Draw(point[0], point[1], id);
 				}
-				if (key2 == 80)				//°´ÏòÏÂ·½Ïò¼üÊ±
+				if (key2 == 80)				//æŒ‰å‘ä¸‹æ–¹å‘é”®æ—¶
 				{
 					if (!Judge(point[0] + 2, point[1], id))
 					{
@@ -429,7 +430,7 @@ void Tetris::Run()					//ÔËĞĞÓÎÏ·
 						Draw(point[0], point[1], id);
 					}
 				}
-				else if (key2 == 75)				//°´Ïò×ó·½Ïò¼üÊ±
+				else if (key2 == 75)				//æŒ‰å‘å·¦æ–¹å‘é”®æ—¶
 				{
 					if (!Judge(point[0], point[1] - 1, id))
 					{
@@ -438,7 +439,7 @@ void Tetris::Run()					//ÔËĞĞÓÎÏ·
 						Draw(point[0], point[1], id);
 					}
 				}
-				else if (key2 == 77)					//°´ÏòÓÒ·½Ïò¼üÊ±
+				else if (key2 == 77)					//æŒ‰å‘å³æ–¹å‘é”®æ—¶
 				{
 					if (!Judge(point[0], point[1] + 1, id))
 					{
@@ -448,12 +449,12 @@ void Tetris::Run()					//ÔËĞĞÓÎÏ·
 					}
 				}
 			}
-			else if (key == 32)					// °´ÏÂ¿Õ¸ñÔİÍ£
+			else if (key == 32)					// æŒ‰ä¸‹ç©ºæ ¼æš‚åœ
 				Pause();
 		}
 
-		Sleep(1);		//µÈ´ı1ºÁÃë
-		i++;				//¿ØÖÆÏÂÂä¼ä¸ô
+		Sleep(1);		//ç­‰å¾…1æ¯«ç§’
+		i++;				//æ§åˆ¶ä¸‹è½é—´éš”
 	}
 }
 
@@ -461,10 +462,7 @@ int main()
 {
 	Tetris game;
 	game.Welocme();
-	system("cls");				//Çå³ı»¶Ó­½çÃæ
+	system("cls");				//æ¸…é™¤æ¬¢è¿ç•Œé¢
 	game.DrawMap();
 	game.Run();
 }
-
-
-

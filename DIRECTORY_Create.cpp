@@ -11,7 +11,7 @@ void create_directory(char directoryname[], int length, int userID, int limit, s
 		{
 			if (strcmp(directoryname, d_or_f[a].dir_list[i].filename) == 0)  //如果已有重名的文件
 			{
-				cout << "There is a directory or file with the same name.File creation failed." << endl;
+				cout << "文件或目录已存在，操作失败！" << endl;
 				return;
 			}
 		}
@@ -45,6 +45,6 @@ void create_directory(char directoryname[], int length, int userID, int limit, s
 		}
 	}
 	else {
-		cout << "full!!!" << endl;
+		cout << "目录下文件已满" << endl;
 	}
 }

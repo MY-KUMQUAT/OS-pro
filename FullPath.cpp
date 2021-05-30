@@ -36,7 +36,6 @@ void DisplayFullPath(struct PathNode* head)
 }
 int Locate(struct PathNode* head)
 {
-
 	struct dir_list dir_list[32];
 	struct PathNode* p1 = head;
 	DisplayFullPath(head);
@@ -63,22 +62,77 @@ int Locate(struct PathNode* head)
 	}
 	return p1->Node_Inode;
 }
-void Enter(struct PathNode* head, char* FILENAME)
+
+int Enter(struct PathNode* head, char* filename)
 {
 	int a = Locate(head);
 	for (int i = 0; i < d_or_f[a].countcount; i++)
 	{
-		if (strcmp(FILENAME, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_userID == userID)
+		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_userID == userID)
 		{
 			struct PathNode* p1 = InitPathNode();
-			p1->NodeName = FILENAME;
+			p1->NodeName = filename;
 			p1->Node_Inode = d_or_f[a].dir_list[i].inode;
 			InsertNode(head, p1);
-			return;
+			return 1;
 		}
 	}
-	printf("error\n");
+	printf("格式错误或文件不存在！\n");
+	return 0;
 }
+
+int FromPos(struct PathNode* head, char c)
+{
+	int from_pos = 0;
+	if (c == '.')
+	{
+		from_pos = 2;
+	}
+	else if (c == '/')
+	{
+		from_pos = 1;
+		ReturnRoot(head);
+	}
+	else
+	{
+		from_pos = 0;
+	}
+	return from_pos;
+}
+
+void chdir(struct PathNode* head, string name)
+{
+	int n = 0;
+	int from_pos = FromPos(head, name[0]);
+	name += '/';
+	string dir = "";
+	for (int i = from_pos; i < name.length(); i++)
+	{
+		if (name[i] != '/')
+		{
+			dir += name[i];
+		}
+		else
+		{
+			if (!Enter(head, ChangeStrToChar(dir)))
+			{
+				while (n)
+				{
+					ReturnLastLevel(head);
+					n--;
+				}
+				break;
+			}
+			else
+			{
+				dir = "";
+				n++;
+			}
+		}
+	}
+	
+}
+
 void ReturnLastLevel(struct PathNode* head)
 {
 	struct PathNode* p1 = head;
@@ -95,6 +149,13 @@ void ReturnLastLevel(struct PathNode* head)
 	printf("\nreturn finished!\n");
 	return;
 
+}
+
+void ReturnRoot(struct PathNode* head)
+{
+	head->next = NULL;
+	printf("\nreturn root finished!\n");
+	return;
 }
 
 void dir(struct PathNode* head)
@@ -124,10 +185,7 @@ void dir(struct PathNode* head)
 }
 struct PathNode* Copy_LinkedLisk(struct PathNode* COPY)
 {
-	//cout<<"COPY is";
-	//DisplayFullPath(COPY);
 	struct PathNode* p1 = COPY, * p2, * p3 = paste_head; //= paste_head;
-	//p2 = InitPathNode();
 	p1 = p1->next;//p2 = p2->next;
 	while (p1 != NULL)
 	{
@@ -138,7 +196,5 @@ struct PathNode* Copy_LinkedLisk(struct PathNode* COPY)
 		p3->next = p2;
 		p3 = p3->next;
 	}
-	//cout<<"in copy";
-	//DisplayFullPath(paste_head);
 	return 0;
 }

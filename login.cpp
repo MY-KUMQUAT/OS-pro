@@ -149,7 +149,7 @@ int menu(struct PathNode* head)
 			int dir_a = 0;
 			for (i = 0; i < d_or_f[dir_a].countcount; i++)
 			{
-				
+
 				temp = d_or_f[dir_a].dir_list[i].inode;
 				if (inodes[temp].inode_userID == -1) continue;
 				inodes[temp].inode_userID = -1;
@@ -169,7 +169,7 @@ int menu(struct PathNode* head)
 			else if (name == "..")
 				ReturnLastLevel(head);
 			else
-				Enter(head, inputname);
+				chdir(head, name);
 		}
 		else if (order == "dir")
 		{
@@ -293,32 +293,39 @@ int menu(struct PathNode* head)
 		{
 			help();
 		}
-		else if (order == "copy")
+		else if (order == "cp")
 		{
 			if (name == "")
 				cout << order << ": 缺少操作数" << endl;
 			else
 				copyfile(head, inputname);
-			//cout<<">>暂时无法关闭，请见谅"<<name<<endl;
 		}
-		else if (order == "cut")
+		else if (order == "pwd")
+		{
+			if (name == "")
+				DisplayFullPath(head);
+			else
+				cout << "格式错误" << endl;;
+		}
+		else if (order == "mv")
 		{
 			if (name == "")
 				cout << order << ": 缺少操作数" << endl;
 			else
-				cutfile(head, inputname);
-			//cout<<">>暂时无法关闭，请见谅"<<name<<endl;
+				mv(head, name);
 		}
-		else if (order == "paste")
-		{
-			pastefile(head);
-		}
-		else if (order == "find")
+		else if (order.substr(0, 4) == "find")
 		{
 			if (name == "")
 				cout << order << ": 缺少操作数" << endl;
 			else
-				searchfile(inputname,head);
+			{
+				if (order.length() == 4)searchfile(inputname, head, 10);
+				else
+				{
+					searchfile(inputname, head, order.substr(4, 1)[0] - '0');
+				}
+			}
 		}
 		else
 			cout << ">>指令不存在,请重新输入" << endl;

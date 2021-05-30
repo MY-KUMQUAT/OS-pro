@@ -2,55 +2,411 @@
 #include "FullPath.h"
 #include "login.h"
 #include <conio.h>
+#include <windows.h>
+#pragma warning(disable : 4996)
 
 int tempLength = 1;
 int tempLimit = 1;
 
-int login(struct PathNode* head)
+void regist(int index)//注册
 {
-	string a;
-	string b;
-
-	int codecorrect = 0;
-	int returntomenu = 0;
-	cout << ">>文件管理系统" << endl;
-
-	while (returntomenu == 0 || returntomenu == 1)
+	string usrname;
+	string password;
+	while (1)
 	{
-		cout << ">>username:";
-		cin >> a;
-		userID = checkname(a);//权哥要的用户id（该用户在用户文本中的顺序）
-		if (userID == -1)           //没找到用户进入注册操作
+		cout << "用户名(长度不超过12个字符)：" << endl;
+		cin >> usrname;
+		if (usrname.length() > 12)
 		{
-			cout << ">>请注册" << endl;
-			signin();
+			cout << "不符合要求，请重新输入" << endl;
 		}
-		else//找到用户输入密码登录
+		else if (checkName(usrname) != -1)//重名
 		{
-			int m = 0;
-			while (codecorrect == 0 && m < 3)
+			cout << "与现有用户名重名,请重新输入" << endl;
+		}
+		else break;
+	}
+	while (1)
+	{
+		cout << "密码(长度不超过20个字符)：" << endl;
+		cin >> password;
+		if (password.length() > 20)
+		{
+			cout << "不符合要求，请重新输入" << endl;
+		}
+		else break;
+	}
+	user[index].username = usrname;
+	user[index].password = password;
+	user[index].uid = index;
+	cout << "注册成功！请登录。" << endl;
+}
+
+int dengLu()//登陆
+{
+	string usrname;
+	string password;
+	int index;
+	int count = 5;//密码可错误次数
+	while (1)
+	{
+		cout << "用户名：" << endl;
+		cin >> usrname;
+		index = checkName(usrname);
+		if (index == -1)//不存在
+		{
+			cout << "用户名不存在，请重新输入" << endl;
+		}
+		else break;
+	}
+	while (count > 0)
+	{
+		cout << "密码：" << endl;
+		cin >> password;
+		if (user[index].password != password)//密码不一致
+		{
+			cout << "密码错误，请重新输入" << endl;
+			count--;
+		}
+		else break;
+	}
+	if (count == 0)
+	{
+		cout << "密码输入错误达5次，退出登录程序。" << endl;
+		return -1;
+	}
+	else cout << "登录成功！" << endl;
+	return index;
+}
+
+void login(struct PathNode* head)
+{
+	int usrNum = checkUsrNum();
+	while (1)
+	{
+		int logState = 0;//登录状态,没登上去就是-1
+		cout << ">>文件管理系统" << endl;
+		if (usrNum == 0)//用户个数为0,注册
+		{
+			int flag = 0;
+			string answer;
+			cout << "无用户在此系统中，是否注册？(Y/N):";
+			while (1)
 			{
-				cout << ">>password:";
-				cin >> b;
-				codecorrect = checkpassword(b, userID);//密码不正确重新输入
-				m++;
+				cin >> answer;
+				if (answer == "Y" || answer == "y")
+				{
+					regist(usrNum);//注册
+					break;
+				}
+				else if (answer == "N" || answer == "n")
+				{
+					flag++;
+					break;
+				}
+				else
+					cout << "请输入‘Y’（‘y’）或‘N’（‘n’）:";
 			}
-			codecorrect = 0;//每次成功登陆以后将codecorrect归0，重新登陆的时候才能正常输入密码
-			if (m < 3)
+			if (flag == 1) {//不注册，退出程序
+				break;
+			}
+			else {//注册成功
+				logState = dengLu();
+				if (logState != -1)//登录成功
+				{
+					if (!menu(head, logState))//进入菜单
+					{
+						break;
+					}//进入菜单menu(head,logState)
+				}
+				else continue;
+			}
+		}
+		else if (usrNum != -1)//用户个数未满
+		{
+			int answer;
+			cout << "登录/注册（1/2）:";
+			while (1)
 			{
-				cout << "userid=" << userID << endl;
-				returntomenu = menu(head);
+				cin >> answer;
+				if (answer != 1 && answer != 2)
+				{
+					cout << "请输入1或2:";
+				}
+				else break;
 			}
-			else
-				cout << ">>密码三次不正确,强制退出" << endl;
+			if (answer == 1)
+			{
+				logState = dengLu();//登录
+				if (logState != -1)
+				{
+					if (!menu(head, logState))//进入菜单
+					{
+						break;
+					}
+				}
+				else continue;
+			}
+			else if (answer == 2)
+			{
+				regist(usrNum);//注册
+				logState = dengLu();
+				if (logState != -1)//登录成功
+				{
+					if (!menu(head, logState))//进入菜单
+					{
+						break;
+					}
+				}
+				else continue;
+			}
+		}
+		else//满了
+		{
+			logState = dengLu();
+			if (logState != -1)//登录成功
+			{
+				if (!menu(head, logState))//进入菜单
+				{
+					break;
+				}
+			}
+			else continue;
 		}
 	}
-	return 0;
+}
+
+bool menu(struct PathNode* head, int index)
+{
+	char a = getchar();//接
+	//index为用户在用户数组中的位置
+	userID = index;
+	string command;//命令
+	string arg;//参数
+	string path = "/root";//路径
+	char* argCh;
+	string input;
+	cout << "欢迎进入文件管理系统!" << user[index].username << endl;
+	help();
+	while (1)
+	{
+		HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);//字体颜色
+		SetConsoleTextAttribute(h, 10);
+		cout << endl << user[index].username;
+		SetConsoleTextAttribute(h, 13);
+		cout << "@OS_pro:" << path << "$ ";
+		SetConsoleTextAttribute(h, 7);
+		getline(cin, input);
+		int l;
+		l = input.find(" ");
+		command = input.substr(0, l);//取命令
+		arg = input.substr(input.find_first_of(" ") + 1, input.length());//取参数
+		argCh = ChangeStrToChar(arg);
+		if (command == "mkdir")
+		{
+			if (arg == "")
+				cout << command << ": 缺少操作数" << endl;
+			else
+				create_directory(argCh, tempLength, index, tempLimit, head);
+		}
+		else if (command == "create")
+		{
+			if (arg == "")
+				cout << command << ": 缺少操作数" << endl;
+			else
+				createfile(argCh, tempLength, index, tempLimit, head);
+		}
+		else if (command == "rm-rf")
+		{
+			if (arg == "")
+				cout << command << ": 缺少操作数" << endl;
+			else
+				delete_dirctory(argCh, head);
+		}
+		else if (command == "cd")
+		{
+			if (arg == "")
+				cout << command << ": 缺少操作数" << endl;
+			else if (arg == "..")
+			{
+				ReturnLastLevel(head);
+				path = DisplayFullPath(head);
+			}
+			else
+			{
+				chdir(head, argCh);
+				path = DisplayFullPath(head);
+			}
+		}
+		else if (command == "pwd")
+		{
+			if (arg == "")
+			{
+				path = DisplayFullPath(head);
+				cout << path << endl;
+			}
+			else
+				cout << "格式错误" << endl;
+		}
+		else if (command == "dir")
+		{
+			dir(head);
+		}
+		else if (command == "rm-f")
+		{
+			if (arg == "")
+				cout << command << ": 缺少操作数" << endl;
+			else
+				deletefile(argCh, head);
+		}
+		else if (command == "read")
+		{
+			if (arg == "")
+				cout << command << ": 缺少操作数" << endl;
+			else
+				readfile(argCh, head);
+		}
+		else if (command == "write")
+		{
+			if (arg == "")
+				cout << command << ": 缺少操作数" << endl;
+			else
+			{
+				char* newcontent = gettext();
+				writefile(argCh, newcontent, head);
+			}
+		}
+		else if (command == "open")
+		{
+			if (arg == "")
+				cout << command << ": 缺少操作数" << endl;
+			else
+				openfile(argCh, head);
+		}
+		else if (command == "close")
+		{
+			if (arg == "")
+				cout << command << ": 缺少操作数" << endl;
+			else
+				closefile(argCh, head);
+		}
+		else if (command == "format")
+		{
+			format();
+		}
+		else if (command == "logout")
+		{
+			string a;
+			while (1)
+			{
+				cout << "登出，返回到登录程序？(Y/N)" << endl;
+				cin >> a;
+				if (a == "y" || a == "Y")
+				{
+					return true;//返回true表示继续运行login函数
+				}
+				else if (a == "N" || a == "n")
+				{
+					return false;//表示退出登录程序
+				}
+				else
+					continue;
+			}
+
+		}
+		else if (command == "exit")
+		{
+			int p = 0;
+			while (1)
+			{
+				string a;
+				cout << "退出程序(Y/N)?" << endl;
+				cin >> a;
+				if (a == "y" || a == "Y")
+				{
+					p++;
+					break;
+				}
+				else if (a == "N" || a == "n")
+				{
+					break;
+				}
+				else
+					continue;
+			}
+			if (p) { return false; }
+		}
+		else if (command == "changeuser")
+		{
+			int j = changeUsr(arg);
+			if (j == -1)
+			{
+				cout << "转换用户失败" << endl;
+			}
+			else
+			{
+				index = j;//现用户id赋给index
+				userID = j;
+				cout << "切换用户成功。" << endl;
+			}
+		}
+		else if (command == "cp")
+		{
+			if (arg == "")
+				cout << command << ": 缺少操作数" << endl;
+			else
+				copyfile(head, argCh);
+		}
+		else if (command == "mv")
+		{
+			if (arg == "")
+				cout << command << ": 缺少操作数" << endl;
+			else
+				mv(head, argCh);
+		}
+		else if (command.substr(0, 4) == "find")
+		{
+			if (arg == "")
+				cout << command << ": 缺少操作数" << endl;
+			else
+			{
+				if (command.length() == 4)searchfile(arg, head, 10);
+				else
+				{
+					searchfile(arg, head, command.substr(4, 1)[0] - '0');
+				}
+			}
+		}
+		else if (command == "help")
+		{
+			help();
+		}
+		else if (command == "cls")
+		{
+			system("cls");
+			path = DisplayFullPath(head);
+		}
+		else if (command == "share")
+		{
+			//arg="abc 123"
+			string filename;
+			string usr;
+			filename = arg.substr(0, arg.find(" "));
+			usr = arg.substr(arg.find_last_of(" ") + 1, arg.length());
+			if (filename == "" || usr == "")
+				cout << "缺少操作数" << endl;
+			else {
+				ShareFile(filename, checkName(usr), head);
+			}
+		}
+		else
+			cout << "请输入正确的命令。" << endl;
+	}
 }
 
 void help()
 {
-	cout << "-----------可用命令菜单：------------" << endl;
+	cout << "-----------可用命令菜单------------" << endl;
 	cout << "           1.mkdir                  " << endl;
 	cout << "           2.create                    " << endl;
 	cout << "           3.rm-rf                    " << endl;
@@ -71,422 +427,54 @@ void help()
 	cout << "           17.paste                  " << endl;
 	cout << "           18.help                   " << endl;
 	cout << "           19.cls                    " << endl;
+	cout << "           20.share                    " << endl;
 	cout << "模仿dos命令方式" << endl;
 }
 
-int menu(struct PathNode* head)
+
+int changeUsr(string usrname)
 {
-
-	char a;
-	cout << ">>welcome!" << endl;
-	help();
-	a = getchar();//防止bug，把之前输入密码是时候的回车接住。
-	int flag = 0;
-	int n;
-
-	string order("");
-	string name("");
-	while (flag == 0)
+	char n;
+	string pw;
+	int a = checkName(usrname);
+	if (a == -1)
 	{
-
-		order = "";
-		name = "";
-		cout << endl << ">>";
-		string str("");
-		char c;
-		while ((c = cin.get()) != '\n')
-		{
-			str = str + c;
-		}
-		n = str.find(' ');
-		if (n == -1)
-		{
-			order = str;
-			name = "";
-		}
-		else
-		{
-			order = str.substr(0, n);
-			name = str.substr(n + 1, str.length());
-		}
-
-		char* inputname;
-		inputname = ChangeStrToChar(name);
-
-		if (order == "mkdir")
-		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else
-				create_directory(inputname, tempLength, userID, tempLimit, head);
-		}
-		else if (order == "create")
-		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else
-				createfile(inputname, tempLength, userID, tempLimit, head);
-		}
-		else if (order == "rm-rf")
-		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else
-				delete_dirctory(inputname, head);
-		}
-		//管理员指令
-		else if (order == "a") //分配空闲块
-		{
-			allocation(1);
-		}
-		else if (order == "r") //回收缓冲区空闲块
-		{
-			recycling(1);
-		}
-		else if (order == "b") //写缓冲
-		{
-			int temp, i;
-			int dir_a = 0;
-			for (i = 0; i < d_or_f[dir_a].countcount; i++)
-			{
-
-				temp = d_or_f[dir_a].dir_list[i].inode;
-				if (inodes[temp].inode_userID == -1) continue;
-				inodes[temp].inode_userID = -1;
-				inodes[temp].inode_limit = -1;
-				for (int j = 0; j < inodes[temp].inode_filelength; j++)
-				{
-					ADDRbuffer[j] = inodes[temp].inode_fileaddress[j];
-				}
-				break;
-			}
-		}
-		//end
-		else if (order == "cd")
-		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else if (name == "..")
-				ReturnLastLevel(head);
-			else
-				chdir(head, name);
-		}
-		else if (order == "dir")
-		{
-			dir(head);
-		}
-		else if (order == "rm-f")
-		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else
-				deletefile(inputname, head);
-		}
-		else if (order == "read")
-		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else
-				readfile(inputname, head);
-		}
-		else if (order == "write")
-		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else
-			{
-				char* newcontent = gettext();
-				writefile(inputname, newcontent, head);
-			}
-		}
-		else if (order == "open")
-		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else
-				openfile(inputname, head);
-		}
-		else if (order == "close")
-		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else
-				closefile(inputname, head);
-		}
-		else if (order == "format")
-		{
-			format();
-		}
-		else if (order == "logout" && name == "")
-		{
-			int q = 0;
-			while (q == 0)
-			{
-				cout << ">>logout and back to login(y/n)?" << endl;
-				string n;
-				cin >> n;
-				if (n == "y")
-				{
-					flag = 1;
-					q = 1;
-					return 1;     //返回到登录username处
-				}
-				else if (n == "n")
-				{
-					q = 1;
-					a = getchar();
-				}
-				else
-				{
-					q = 0;
-					cout << "请用y/n" << endl;
-				}
-			}
-		}
-		else if (order == "exit" && name == "")//退出系统
-		{
-			int p = 0;
-			while (p == 0)
-			{
-				cout << ">>退出程序(y/n)?" << endl;
-				string m;
-				cin >> m;
-				if (m == "y")//退出程序
-				{
-					flag = 1;
-					return 2;
-				}
-				else if (m == "n")
-				{
-					p = 1;
-					a = getchar();
-				}
-				else
-				{
-					p = 0;
-					cout << "请用y/n" << endl;
-				}
-			}
-		}
-		else if (order == "cls")
-		{
-			system("cls");
-			DisplayFullPath(head);
-		}
-		else if (order == "changeuser")
-		{
-			int j = 0;
-			int old;
-			old = userID;//保存旧的id，防止切换失败
-			j = changeuser(name);
-			if (j == 997755)
-			{
-				cout << ">>用户切换失败" << endl;
-				userID = old;//切换失败还原现有的userid;p
-			}
-			else
-			{
-				cout << ">>成功切换用户" << endl;
-			}
-		}
-		else if (order == "help")
-		{
-			help();
-		}
-		else if (order == "cp")
-		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else
-				copyfile(head, inputname);
-		}
-		else if (order == "pwd")
-		{
-			if (name == "")
-				DisplayFullPath(head);
-			else
-				cout << "格式错误" << endl;;
-		}
-		else if (order == "mv")
-		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else
-				mv(head, name);
-		}
-		else if (order.substr(0, 4) == "find")
-		{
-			if (name == "")
-				cout << order << ": 缺少操作数" << endl;
-			else
-			{
-				if (order.length() == 4)searchfile(inputname, head, 10);
-				else
-				{
-					searchfile(inputname, head, order.substr(4, 1)[0] - '0');
-				}
-			}
-		}
-		else
-			cout << ">>指令不存在,请重新输入" << endl;
+		cout << "用户不存在" << endl;
+		return -1;
 	}
+	cout << "密码：";
+	cin >> pw;
+	n = getchar();
+	if (user[a].password != pw)
+	{
+		cout << "密码错误！" << endl;
+		return -1;
+	}
+	return a;
 }
 
-int changeuser(string str)
+
+int checkName(string a)//检查用户是否存在,-1为不存在，其他为存在且返回index
 {
-	string user;
-	string pass;
-	int n;
-
-	int flag;
-	n = str.find(' ');
-
-	if (n == -1)
+	for (int i = 0; i < size_OF_user; i++)
 	{
-		cout << ">>指令格式错误" << endl;
-		return 997755;            //反馈一个不可能出现的数字
+		if (user[i].username == a)
+		{
+			return user[i].uid;
+		}
 	}
-	else
-	{
-		user = str.substr(0, n);
-		pass = str.substr(n + 1, str.length());
-	}
-	userID = checkname(user);
-	if (userID == -1)
-	{
-		return 997755;
-	}
-	else
-	{
-		flag = checkpassword(pass, userID);
-		if (flag == 0)
-			return 997755;
-		return userID;
-	}
+	return -1;
 }
 
-//logincheck
-int checkname(string a)//检查用户是否存在
+
+int checkUsrNum()//检查注册的用户是否已经达到8个
 {
-	int n = 0;
-	int id = 0;
-	int flag = 0;
-	ifstream test("user.txt", ios::in);
-
-	string str;
-	string str2;
-	if (!test)
+	for (int i = 0; i < size_OF_user; i++)
 	{
-		cout << "open fail" << endl;
-		id = -2;
+		if (user[i].password == "")//未满,返回0就是用户为0
+			return i;
 	}
-	else
-	{
-		while (getline(test, str))
-		{
-
-			id++;
-			if (str == a)
-			{
-				cout << "user exists" << endl;
-				flag = 1;
-				break;
-			}
-		}
-
-		if (flag == 0)
-		{
-			cout << "user not exists" << endl;
-			id = -1;
-		}
-
-		return id;//返回用户在user.txt所在的行数作为userid
-	}
-}
-int checkpassword(string b, int n)//该用户存在，检查密码是否正确
-{
-	int i = 0;
-	int flag1 = 0;
-	int codecorrect = 0;
-	ifstream test("password.txt", ios::in);
-
-	string str;
-	string str2;
-
-	if (!test)
-	{
-		cout << "open fail" << endl;
-	}
-	else
-	{
-		for (i = 0; i < n, getline(test, str); i++)//code和username行数相对应，要找到用户名对应密码的那一行，先逐行寻找
-		{
-			if (str == b)
-			{
-				if (i + 1 == n)//在文本中找到了密码串，但是要保证是username在user.txt中所排列位置的那一行，如果不是，说明密码错误
-				{
-					flag1 = 1;
-					cout << "password correct!" << endl;
-					codecorrect = 1;
-					break;
-				}
-			}
-
-		}
-
-		if (flag1 == 0)
-		{
-			cout << "密码错误!" << endl;
-
-		}
-	}
-	return codecorrect;
-}
-void signin()
-{
-	string a;
-	string b;
-	string ans;
-	int n = 0;
-	int flag = 0;//能够反复输入,如用户名输入重复的情况
-
-	while (flag == 0)
-	{
-
-
-		cout << "your username:" << endl;
-		cin >> a;
-
-		n = checkname(a);
-		if (n == -1)//用户名没重复的情况下，可注册
-		{
-			const char* filename = "user.txt";
-			const char* filename1 = "password.txt";
-
-
-			cout << "your password:" << endl;
-			cin >> b;
-			cout << "确认注册(y/n)？" << endl;
-			cin >> ans;
-			if (ans == "y")
-			{
-				endwriting(filename, a);
-				endwriting(filename1, b);
-				flag = 1;
-			}
-			else
-				flag = 0;
-		}
-		else//用户名重复，不能注册，重新输入
-		{
-
-		}
-	}
-}
-void endwriting(const char* yourfile, string a)//文件尾写入
-{
-	ofstream out(yourfile, ios::app);
-	out << a << endl;
+	return -1;
 }
 
 char* ChangeStrToChar(string InputString)
@@ -495,7 +483,7 @@ char* ChangeStrToChar(string InputString)
 	int i;
 	for (i = 0; i <= InputString.length(); i++)
 		InputChar[i] = InputString[i];
-	InputChar[i] = '\0';//将最后一个字符后面的元素置空，否则可能出现奇怪的错误
+	InputChar[i] = '\0'; //将最后一个字符后面的元素置空，否则可能出现奇怪的错误
 	return InputChar;
 }
 
@@ -536,3 +524,12 @@ char* gettext()
 	return newcontent;
 }
 
+bool checkID(int* usrID)//检查用户id是否在可对文件操作的数组内
+{
+	for (int i = 0; i < 8; i++)
+	{
+		if (usrID[i] == userID)
+			return true;
+	}
+	return false;
+}

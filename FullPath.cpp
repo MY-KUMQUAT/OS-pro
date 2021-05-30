@@ -22,28 +22,29 @@ void InsertNode(struct PathNode* head, struct PathNode* New)
 	New->next = NULL;
 
 }
-void DisplayFullPath(struct PathNode* head)
+
+string DisplayFullPath(struct PathNode* head)
 {
 	struct PathNode* p1 = head;
-	printf("Path is :%s", p1->NodeName);
-	p1 = p1->next;
+	string path = "";
 	while (p1 != NULL)
 	{
-		printf("\\%s", p1->NodeName);
+		path = path + "/" + p1->NodeName;
 		p1 = p1->next;
 	}
-	printf("\n");
+	return path;
 }
-int Locate(struct PathNode* head)
+
+int Locate(struct PathNode* head)//定位到路径的最后一个目录，比如/root/abc的话，就定位到abc这个目录文件的i节点。
 {
-	struct dir_list dir_list[32];
+	struct dir_list dir_list[32];//目录列表
 	struct PathNode* p1 = head;
 	DisplayFullPath(head);
 	while (p1->next != NULL)
 	{
 		int flag = 0;
 		for (int i = 0; i < 32; i++) {
-			dir_list[i] = d_or_f[p1->Node_Inode].dir_list[i];
+			dir_list[i] = d_or_f[p1->Node_Inode].dir_list[i];//根目录的i节点找出根目录文件在物理记录目录的块
 		}
 		for (int i = 0; i < 32; i++)
 		{

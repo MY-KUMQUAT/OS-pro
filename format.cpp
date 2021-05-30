@@ -24,8 +24,10 @@ void format()  //格式化，初始化
 
 	for (int i = 1; i < num_OF_datablock; i++)  //目录及文件区域初始化
 	{
+
 		d_or_f[i].df_inum = -1;
 		d_or_f[i].countcount = 0;
+
 		strcpy(d_or_f[i].dir_directoryname, "");
 	}
 
@@ -48,6 +50,7 @@ void format()  //格式化，初始化
 		}
 	}
 
+	//int m;
 	for (int i = 0; i < num_OF_datablock; i++)  //成组链接法组织空闲块
 	{
 		if ((i + 1) % 50 == 0)

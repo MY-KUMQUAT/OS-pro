@@ -2,14 +2,13 @@
 #include "FullPath.h"
 #include "login.h"
 
-void searchfile(char* reg_name, struct PathNode* head, int depth)
+void searchfile(string reg_name, struct PathNode* head, int depth)
 {
 	if (recursion_flag > depth) return; //当前深度大于搜索深度则返回
-	string reg_str = ChangeCharToStr(reg_name);
 	regex reg;
 	try
 	{
-		regex r(reg_str);
+		regex r(reg_name);
 		reg = r;
 	}
 	catch (std::regex_error e)

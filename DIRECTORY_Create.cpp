@@ -27,6 +27,14 @@ void create_directory(char directoryname[], int length, int userID, int limit, s
 				inodes[i].inode_filelength = length;
 				inodes[i].inode_limit = limit;
 				inodes[i].inode_userID = userID;
+				for (int k = 0; k < 8; k++)
+				{
+					if (inodes[i].inode_userID[k] < 0)
+					{
+						inodes[i].inode_userID[k] = userID;
+						break;
+					}
+				}
 				allocation(length);
 				for (int j = 0; j < length; j++)
 				{

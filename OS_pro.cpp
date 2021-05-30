@@ -8,6 +8,7 @@ struct super_block super_block;
 struct dir_file_block d_or_f[num_OF_datablock];
 struct inode inodes[num_OF_inode];
 struct PathNode* paste_head;
+struct userlog user[size_OF_user];
 
 int main()
 {

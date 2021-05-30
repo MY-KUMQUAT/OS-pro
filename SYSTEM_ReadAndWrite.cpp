@@ -8,6 +8,11 @@ void write_system(FILE* fp)   //将磁盘信息统统写入系统文件中（以二进制文件的形式
 		fwrite(&storage[i], sizeof(struct block), 1, fp);
 	}
 
+	for (int i = 0; i < size_OF_user; i++)
+	{
+		fwrite(&user[i], sizeof(struct userlog), 1, fp);
+	}
+
 	fwrite(&super_block, sizeof(struct super_block), 1, fp);
 
 	for (int i = 0; i < num_OF_inode; i++)
@@ -34,6 +39,11 @@ void read_system(FILE* fp)  //将磁盘信息从系统文件filesystem中读取出来
 	for (int i = 0; i < num_OF_storage; i++)
 	{
 		fread(&storage[i], sizeof(struct block), 1, fp);
+	}
+
+	for (int i = 0; i < size_OF_user; i++)
+	{
+		fread(&user[i], sizeof(struct userlog), 1, fp);
 	}
 
 	fread(&super_block, sizeof(struct super_block), 1, fp);

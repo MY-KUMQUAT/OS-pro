@@ -5,6 +5,8 @@
 #include <windows.h>
 #include <malloc.h>
 
+using namespace std;
+
 struct PathNode
 {
 	char* NodeName;
@@ -14,7 +16,7 @@ struct PathNode
 
 struct PathNode* InitPathNode();
 void InsertNode(struct PathNode* head, struct PathNode* New);
-void DisplayFullPath(struct PathNode* head);
+string DisplayFullPath(struct PathNode* head);
 int Locate(struct PathNode* head);
 int Enter(PathNode* head, char* filename);
 int FromPos(PathNode* head, char c);

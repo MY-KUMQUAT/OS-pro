@@ -17,6 +17,8 @@ using namespace std;
 #define maxnum_OF_openfile  10  //最大可同时打开10个文件
 #define size_OF_fileADDRbuffer  100  //文件缓冲池大小
 
+#define size_OF_user 8
+
 void format();
 void write_system(FILE* fp);
 void read_system(FILE* fp);
@@ -41,9 +43,10 @@ void copyfile(struct PathNode* head, char filename[]);
 void pastefile(struct PathNode* head);
 void cutfile(struct PathNode* head, char filename[]);
 void mv(struct PathNode* head, string name);
-void searchfile(char* filename, PathNode* head, int depth);
+void searchfile(string filename, PathNode* head, int depth);
 void chdir(struct PathNode* head, string name);
 
+void ShareFile(string filename, int usr, struct PathNode* head);
 
 extern int openfile_array[maxnum_OF_openfile];  //可同时打开文件的数组
 extern int openfile_array_head;
@@ -73,6 +76,15 @@ struct block  //每块
 };
 
 extern struct block storage[num_OF_storage];
+
+struct userlog //用户
+{
+	int uid;
+	string password;
+	string username;
+};
+
+extern struct userlog user[size_OF_user];
 
 struct super_block  //超级块
 {
@@ -105,7 +117,7 @@ struct inode  //i节点
 	int inode_filelength;  //文件长度
 	int inode_fileaddress[length_OF_fileaddress];  //文件的物理块号
 	int inode_limit;  //文件读写权限
-	int inode_userID;  //用户标识符
+	int inode_userID[8];  //用户标识符
 };
 
 extern struct inode inodes[num_OF_inode];

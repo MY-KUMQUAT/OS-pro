@@ -1,5 +1,4 @@
 #include "OS_pro.h"
-#include "FullPath.h"
 #include "login.h"
 
 void delete_dirctory(char directory[], struct PathNode* head)
@@ -12,30 +11,22 @@ void delete_dirctory(char directory[], struct PathNode* head)
 	{
 		for (int i = 0; i < d_or_f[a].countcount; i++)
 		{
-			if (strcmp(directory, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_userID == userID)
+			if (strcmp(directory, d_or_f[a].dir_list[i].filename) == 0 &&inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 0 && checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))
 			{
-				//printf("进入当前目录");
-				//Enter(head,directory[]);
 				recycledelete(head, directory);
 				flag = 1;
 				break;
 			}
-			/*else
-			{
-				cout<<"没有找到对应目录，删除失败1"<<endl;
-				//cout<<d_or_f[a].dir_list[i].filename<<inode[d_or_f[a].dir_list[i].inode].inode_filetype<<endl;
-				return;
-			}*/
 		}
 		if (flag == 0)
 		{
-			cout << "没有找到对应目录，删除失败1" << endl;
+			cout << "没有找到对应目录，删除失败" << endl;
 			return;
 		}
 	}
 	else
 	{
-		cout << "没有找到对应目录，删除失败2" << endl;
+		cout << "没有找到对应目录，删除失败" << endl;
 		return;
 	}
 
@@ -45,14 +36,11 @@ void recycledelete(struct PathNode* head, char directory[])
 {
 	Enter(head, directory);
 	int temp = Locate(head);
-	//cout<<"count is="<<d_or_f[temp].countcount<<endl;
 	for (int i = 0; i < d_or_f[temp].countcount;)
 	{
-		//cout<<"filename is="<<d_or_f[temp].dir_list[i].filename<<endl;
 		int nowstytle = d_or_f[temp].dir_list[i].inode;
 		if (inodes[nowstytle].inode_filetype == 1) //0目录 1文件
 		{
-			//cout<<"filename is="<<d_or_f[temp].dir_list[i].filename<<endl;
 			deletefile(d_or_f[temp].dir_list[i].filename, head);//删除文件
 			cout << "删除成功: " << d_or_f[temp].dir_list[i].filename << endl;
 		}
@@ -90,7 +78,10 @@ void release(int iNode) {
 	inodes[iNode].inode_filetype = -1;
 	inodes[iNode].inode_inum = -1;
 	inodes[iNode].inode_limit = -1;
-	inodes[iNode].inode_userID = -1;
+	for (int i = 0; i < 8; i++)
+	{
+		inodes[iNode].inode_userID[i] = -1;
+	}
 }
 
 

@@ -1,27 +1,7 @@
-#include "FullPath.h"
 #include "OS_pro.h"
 #include "login.h"
 #include <stdio.h>
 #include <malloc.h>
-
-struct PathNode* InitPathNode()
-{
-	struct PathNode* p1;
-	p1 = (struct PathNode*)malloc(sizeof(struct PathNode));
-	p1->next = NULL;
-	return p1;
-}
-void InsertNode(struct PathNode* head, struct PathNode* New)
-{
-	struct PathNode* p1 = head;
-	while (head->next != NULL)
-	{
-		head = head->next;
-	}
-	head->next = New;
-	New->next = NULL;
-
-}
 
 string DisplayFullPath(struct PathNode* head)
 {
@@ -56,7 +36,7 @@ int Locate(struct PathNode* head)//定位到路径的最后一个目录，比如/root/abc的话，
 			}
 		}
 		if (flag != 1) {
-			printf("fail\n");
+			printf("失败！\n");
 			return -1;
 		}
 		p1 = p1->next;
@@ -69,7 +49,7 @@ int Enter(struct PathNode* head, char* filename)
 	int a = Locate(head);
 	for (int i = 0; i < d_or_f[a].countcount; i++)
 	{
-		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_userID == userID)
+		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))
 		{
 			struct PathNode* p1 = InitPathNode();
 			p1->NodeName = filename;
@@ -131,7 +111,7 @@ void chdir(struct PathNode* head, string name)
 			}
 		}
 	}
-	
+
 }
 
 void ReturnLastLevel(struct PathNode* head)
@@ -139,7 +119,6 @@ void ReturnLastLevel(struct PathNode* head)
 	struct PathNode* p1 = head;
 	if (p1->next == NULL)
 	{
-		printf("now is root\n");
 		return;
 	}
 	while (p1->next->next != NULL)
@@ -147,7 +126,6 @@ void ReturnLastLevel(struct PathNode* head)
 		p1 = p1->next;
 	}
 	p1->next = NULL;
-	printf("\nreturn finished!\n");
 	return;
 
 }
@@ -155,11 +133,10 @@ void ReturnLastLevel(struct PathNode* head)
 void ReturnRoot(struct PathNode* head)
 {
 	head->next = NULL;
-	printf("\nreturn root finished!\n");
 	return;
 }
 
-void dir(struct PathNode* head)
+void Dir(struct PathNode* head)
 {
 	int a = Locate(head);
 	struct dir_list dirlist[32];
@@ -167,35 +144,20 @@ void dir(struct PathNode* head)
 	{
 		dirlist[m] = d_or_f[a].dir_list[m];
 	}
-	cout << endl << "Directory:" << endl;
+	cout << endl << "————目录————" << endl;
 	for (int i = 0; i < d_or_f[a].countcount; i++)
 	{
-		if (inodes[dirlist[i].inode].inode_filetype == 0 && inodes[dirlist[i].inode].inode_userID == userID)
+		if (inodes[dirlist[i].inode].inode_filetype == 0 && checkID(inodes[dirlist[i].inode].inode_userID))
 		{
 			cout << dirlist[i].filename << " ";
 		}
 	}
-	cout << endl << "File:" << endl;
+	cout << endl << "————文件————" << endl;
 	for (int i = 0; i < d_or_f[a].countcount; i++)
 	{
-		if (inodes[dirlist[i].inode].inode_filetype == 1 && inodes[dirlist[i].inode].inode_userID == userID)
+		if (inodes[dirlist[i].inode].inode_filetype == 1 && checkID(inodes[dirlist[i].inode].inode_userID))
 		{
 			cout << dirlist[i].filename << " ";
 		}
 	}
-}
-struct PathNode* Copy_LinkedLisk(struct PathNode* COPY)
-{
-	struct PathNode* p1 = COPY, * p2, * p3 = paste_head; //= paste_head;
-	p1 = p1->next;//p2 = p2->next;
-	while (p1 != NULL)
-	{
-		p2 = InitPathNode();
-		p2->NodeName = p1->NodeName;
-		p2->Node_Inode = p1->Node_Inode;
-		p1 = p1->next;
-		p3->next = p2;
-		p3 = p3->next;
-	}
-	return 0;
 }

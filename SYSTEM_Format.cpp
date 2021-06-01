@@ -19,7 +19,10 @@ void format()  //格式化，初始化
 		inodes[i].inode_filelength = -1;
 		inodes[i].inode_filetype = -1;
 		inodes[i].inode_limit = -1;
-		inodes[i].inode_userID = -1;
+		for (int q = 0; q < 8; q++)
+		{
+			inodes[i].inode_userID[q] = -1;
+		}
 	}
 
 	for (int i = 1; i < num_OF_datablock; i++)  //目录及文件区域初始化
@@ -50,7 +53,6 @@ void format()  //格式化，初始化
 		}
 	}
 
-	//int m;
 	for (int i = 0; i < num_OF_datablock; i++)  //成组链接法组织空闲块
 	{
 		if ((i + 1) % 50 == 0)

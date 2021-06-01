@@ -1,5 +1,4 @@
 #include "OS_pro.h"
-#include "FullPath.h"
 #include "login.h"
 
 void searchfile(string reg_name, struct PathNode* head, int depth)
@@ -22,7 +21,7 @@ void searchfile(string reg_name, struct PathNode* head, int depth)
 	{
 		string filename = ChangeCharToStr(d_or_f[a].dir_list[i].filename);
 		bool ret = regex_match(filename, reg); //’˝‘Ú∆•≈‰
-		if (inodes[d_or_f[a].dir_list[i].inode].inode_userID == userID)
+		if (checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))
 		{
 			if (ret == 1)
 			{

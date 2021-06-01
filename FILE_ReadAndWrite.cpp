@@ -1,5 +1,4 @@
 #include "OS_pro.h"
-#include "FullPath.h"
 #include "login.h"
 
 void readfile(char* filename, struct PathNode* head)
@@ -9,7 +8,7 @@ void readfile(char* filename, struct PathNode* head)
 	if (!file_access(filename, head)) return; //判断文件访问权限
 	for (i = 0; i < d_or_f[a].countcount; i++)
 	{
-		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 1 && inodes[d_or_f[a].dir_list[i].inode].inode_userID == userID)
+		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 1 && checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))
 		{
 			cout << endl;
 			for (int j = 0; j < inodes[d_or_f[a].dir_list[i].inode].inode_filelength; j++)  //读取文件内容
@@ -39,7 +38,7 @@ void writefile(char* filename, char* newcontent, struct PathNode* head)
 	a = Locate(head);
 	for (i = 0; i < d_or_f[a].countcount; i++)
 	{
-		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 1 && inodes[d_or_f[a].dir_list[i].inode].inode_userID == userID)
+		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 1 && checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))
 		{
 			for (int n = 0; n < inodes[d_or_f[a].dir_list[i].inode].inode_filelength; n++)  //先清空文件内容
 			{

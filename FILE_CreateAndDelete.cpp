@@ -1,5 +1,4 @@
 #include "OS_pro.h"
-#include "FullPath.h"
 #include "login.h"
 
 void createfile(char filename[], int length, int userID, int limit, struct PathNode* head)
@@ -8,9 +7,9 @@ void createfile(char filename[], int length, int userID, int limit, struct PathN
 	if (d_or_f[a].countcount != 32) {
 		for (int i = 0; i < d_or_f[a].countcount; i++)
 		{
-			if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_userID == userID)  //如果已有重名的文件
+			if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))  //如果已有重名的文件
 			{
-				cout << "There is a directory or file with the same name.File creation failed." << endl;
+				cout << "文件已存在！" << endl;
 				return;
 			}
 		}
@@ -20,10 +19,18 @@ void createfile(char filename[], int length, int userID, int limit, struct PathN
 			{
 				d_or_f[i].df_inum = i;
 				inodes[i].inode_inum = i;
-				inodes[i].inode_filetype = 1;  //文件类型，0为目录文件，1为普通文件
+				inodes[i].inode_filetype = 1;  
 				inodes[i].inode_filelength = length;
 				inodes[i].inode_limit = limit;
-				inodes[i].inode_userID = userID;
+				//inodes[i].inode_userID = userID;
+				for (int q = 0; q < 8; q++)
+				{
+					if (inodes[i].inode_userID[q] < 0)
+					{
+						inodes[i].inode_userID[q] = userID;
+					}
+					break;
+				}
 				allocation(length);
 				for (int j = 0; j < length; j++)
 				{
@@ -42,12 +49,12 @@ void createfile(char filename[], int length, int userID, int limit, struct PathN
 		}
 	}
 	else {
-		cout << "full!!!" << endl;
+		cout << "文件已满！" << endl;
 	}
 }
 
 
-void deletefile(char* filename, struct PathNode* head)
+void deletefile(char filename[], struct PathNode* head)
 {
 
 	int a = Locate(head);
@@ -57,7 +64,7 @@ void deletefile(char* filename, struct PathNode* head)
 
 	for (i = 0; i < d_or_f[a].countcount; i++)
 	{
-		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 1 && inodes[d_or_f[a].dir_list[i].inode].inode_userID == userID)
+		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 1 && checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))
 		{
 			for (int j = 0; j < inodes[d_or_f[a].dir_list[i].inode].inode_filelength; j++)  //清空文件内容
 			{
@@ -68,7 +75,11 @@ void deletefile(char* filename, struct PathNode* head)
 			}
 
 			temp = d_or_f[a].dir_list[i].inode;
-			inodes[temp].inode_userID = -1;
+			//inodes[temp].inode_userID = -1;
+			for (int i = 0; i < 8; i++)
+			{
+				inodes[temp].inode_userID[i] = -1;
+			}
 			inodes[temp].inode_limit = -1;
 			for (int j = 0; j < inodes[temp].inode_filelength; j++)
 			{
@@ -105,7 +116,7 @@ void deletefile(char* filename, struct PathNode* head)
 	}
 	if (i == tempcount)
 	{
-		cout << "This file does not exist in the user's current directory." << endl;
+		cout << "文件不存在！" << endl;
 	}
 }
 

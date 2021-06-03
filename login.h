@@ -9,7 +9,7 @@
 using namespace std;
 
 void regist(int index);
-int dengLu();
+int dengLu(struct PathNode* head);
 int changeUsr(string usrname);
 int checkName(string a);
 int checkUsrNum();

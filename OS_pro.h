@@ -38,7 +38,7 @@ extern int recursion_flag;  //搜索深度，递归标记
 extern struct block storage[num_OF_storage];
 extern struct userlog user[size_OF_user];
 extern struct super_block super_block;
-extern struct dir_file_block d_or_f[num_OF_datablock];
+extern struct dir_file_block data_block[num_OF_datablock];
 extern struct inode inodes[num_OF_inode];
 
 extern struct userlog user[size_OF_user];

@@ -4,30 +4,44 @@
 
 void help()
 {
-	cout << "-----------可用命令菜单------------" << endl;
-	cout << "           1.mkdir                  " << endl;
-	cout << "           2.create                    " << endl;
-	cout << "           3.rm-rf                    " << endl;
-	cout << "           4.enter                   " << endl;
-	cout << "           5.cd                   " << endl;
-	cout << "           6.dir                  " << endl;
-	cout << "           7.rm-f                   " << endl;
-	cout << "           8.read                     " << endl;
-	cout << "           9.write                  " << endl;
-	cout << "           10.open                  " << endl;
-	cout << "           11.close                 " << endl;
-	cout << "           12.format                 " << endl;
-	cout << "           12.logout                 " << endl;
-	cout << "           13.exit                   " << endl;
-	cout << "           14.changeuser             " << endl;
-	cout << "           15.copy                   " << endl;
-	cout << "           16.cut                    " << endl;
-	cout << "           17.paste                  " << endl;
-	cout << "           18.help                   " << endl;
-	cout << "           19.cls                    " << endl;
-	cout << "           20.share                    " << endl;
-	cout << "模仿dos命令方式" << endl;
+	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);//字体颜色
+	SetConsoleTextAttribute(h, 2);
+	cout << "——————————————命令菜单——————————————" << endl;
+	SetConsoleTextAttribute(h, 7);
+	cout << "  1.mkdir         [目录名]               ——创建目录" << endl;
+	cout << "  2.rm-rf         [目录名]               ——删除目录" << endl;
+	cout << "  3.rename-d      [目录名] [目录名]      ——目录重命名" << endl;
+	cout << "  4.cd            [目录名]               ——切换目录（相对路径）" << endl;
+	cout << "  5.cd           ./[目录名]              ——切换目录（相对路径）" << endl;
+	cout << "  6.cd            /[目录名]              ——切换目录（绝对路径）" << endl;
+	cout << "  7.cd            ..                     ——切换目录（返回上一级）" << endl;
+	cout << "  8.pwd                                  ——显示当前目录" << endl;
+	cout << "  9.dir                                  ——显示当前目录下内容" << endl;
+	cout << "  10.create       [文件名]               ——创建文件" << endl;
+	cout << "  11.rm-f         [文件名]               ——删除文件" << endl;
+	cout << "  12.rename-f     [文件名] [文件名]      ——目录重命名" << endl;
+	cout << "  13.open         [文件名]               ——打开文件" << endl;
+	cout << "  14.read         [文件名]               ——读文件" << endl;
+	cout << "  15.write        [文件名]               ——写文件" << endl;
+	cout << "  16.close        [文件名]               ——关闭文件" << endl;
+	cout << "  17.cp           [文件名][目录名]       ——复制文件" << endl;
+	cout << "  18.mv           [文件名][目录名]       ——移动文件" << endl;
+	cout << "  19.find         [搜索深度] [文件名]/[目录名]（正则表达式）" << endl;
+	cout << "                                         ——模糊搜索文件/目录" << endl;
+	cout << "  20.logout                              ——登出" << endl;
+	cout << "  21.chuser       [用户名]               ——切换用户" << endl;
+	cout << "  22.chmod-a      [文件名]/[目录名] [用户名]" << endl;
+	cout << "                                         ——文件共享" << endl;
+	cout << "  23.chmod-r      [文件名]/[目录名] [用户名]" << endl;
+	cout << "                                         ——回收权限" << endl;
+	cout << "  24.format                              ——系统格式化" << endl;
+	cout << "  25.save                                ——系统保存" << endl;
+	cout << "  26.exit                                ——系统保存并退出" << endl;
+	cout << "  27.restore                             ——系统从备份中恢复" << endl;
+	cout << "  28.help                                ——帮助" << endl;
+	cout << "  29.cls                                 ——清屏" << endl;
 }
+
 
 bool menu(struct PathNode* head, int index)
 {
@@ -183,7 +197,7 @@ bool menu(struct PathNode* head, int index)
 			}
 			if (p) { return false; }
 		}
-		else if (command == "changeuser")
+		else if (command == "chuser")
 		{
 			int j = changeUsr(arg);
 			if (j == -1)
@@ -194,6 +208,7 @@ bool menu(struct PathNode* head, int index)
 			{
 				index = j;//现用户id赋给index
 				userID = j;
+				ReturnRoot(head);
 				cout << "切换用户成功。" << endl;
 			}
 		}
@@ -223,6 +238,7 @@ bool menu(struct PathNode* head, int index)
 					searchfile(arg, head, command.substr(4, 1)[0] - '0');
 				}
 			}
+			file_found = 0;
 		}
 		else if (command == "help")
 		{
@@ -257,10 +273,47 @@ bool menu(struct PathNode* head, int index)
 				Recovery(filename, usr, head);
 			}
 		}
+		else if (command == "rename-d")
+		{
+			string filename;
+			string new_name;
+			filename = arg.substr(0, arg.find(" "));
+			new_name = arg.substr(arg.find_last_of(" ") + 1, arg.length());
+			if (filename == "" || new_name == "")
+				cout << "缺少操作数" << endl;
+			else {
+				DirRename(head, filename, new_name);
+			}
+		}
+		else if (command == "rename-f")
+		{
+			string filename;
+			string new_name;
+			filename = arg.substr(0, arg.find(" "));
+			new_name = arg.substr(arg.find_last_of(" ") + 1, arg.length());
+			if (filename == "" || new_name == "")
+				cout << "缺少操作数" << endl;
+			else {
+				FileRename(head, filename, new_name);
+			}
+		}
 		else if (command == "save")
 		{
 			FILE* fp = fopen("filesystem", "rb");
-			write_system(fp);
+			write_system(fp, "filesystem");
+		}
+		else if (command == "restore")
+		{
+			FILE* fbak = fopen("filesystem.bak", "rb");
+			if (fbak == NULL)
+			{
+				cout << "暂无备份" << endl;
+			}
+			else
+			{
+				char bak[] = "filesystem.bak";
+				read_system(fbak, bak);
+			}
 		}
 		else
 			cout << "请输入正确的命令。" << endl;

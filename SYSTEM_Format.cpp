@@ -1,15 +1,15 @@
 #include "OS_pro.h"
 
-void format()  //格式化，初始化
+void format()  //格式化
 {
 	int m;
 	super_block.sbk_num = num_OF_superblock;
-	for (int i = 0; i < num_OF_superblock; i++)  //初始化超级块
+	for (int i = 0; i < num_OF_superblock; i++)  //格式化超级块
 	{
 		super_block.sbk_free[i] = num_OF_superblock - 1 - i;  //放入栈中的空闲块
 	}
 
-	for (int i = 0; i < num_OF_inode; i++)  //i节点区域初始化
+	for (int i = 0; i < num_OF_inode; i++)  //i节点区域格式化
 	{
 		for (int j = 0; j < length_OF_fileaddress; j++)
 		{
@@ -25,21 +25,21 @@ void format()  //格式化，初始化
 		}
 	}
 
-	for (int i = 1; i < num_OF_datablock; i++)  //目录及文件区域初始化
+	for (int i = 1; i < num_OF_datablock; i++)  //目录及文件区域格式化
 	{
 
-		d_or_f[i].df_inum = -1;
-		d_or_f[i].countcount = 0;
+		data_block[i].df_inode = -1;
+		data_block[i].countcount = 0;
 
-		strcpy(d_or_f[i].dir_directoryname, "");
+		strcpy(data_block[i].directoryname, "");
 	}
 
 	//初始化根目录
-	d_or_f[0].df_inum = -1;
-	d_or_f[0].countcount = 0;
-	strcpy(d_or_f[0].dir_directoryname, "root");
+	data_block[0].df_inode = -1;
+	data_block[0].countcount = 0;
+	strcpy(data_block[0].directoryname, "root");
 
-	for (int i = 0; i < num_OF_storage; i++)
+	for (int i = 0; i < num_OF_storage; i++)  //格式化盘块
 	{
 		storage[i].blk_num = 0;
 		storage[i].blk_flag = 0;

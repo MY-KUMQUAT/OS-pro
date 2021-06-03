@@ -4,10 +4,11 @@
 void createfile(char filename[], int length, int userID, int limit, struct PathNode* head)
 {
 	int a = Locate(head);
-	if (d_or_f[a].countcount != 32) {
-		for (int i = 0; i < d_or_f[a].countcount; i++)
+	if (data_block[a].countcount != 32) 
+	{
+		for (int i = 0; i < data_block[a].countcount; i++)
 		{
-			if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))  //如果已有重名的文件
+			if (strcmp(filename, data_block[a].fcb[i].filename) == 0 && checkID(inodes[data_block[a].fcb[i].inode].inode_userID))  //如果已有重名的文件
 			{
 				cout << "文件已存在！" << endl;
 				return;
@@ -15,14 +16,13 @@ void createfile(char filename[], int length, int userID, int limit, struct PathN
 		}
 		for (int i = 0; i < num_OF_inode; i++)
 		{
-			if (d_or_f[i].df_inum == -1)
+			if (data_block[i].df_inode == -1)
 			{
-				d_or_f[i].df_inum = i;
+				data_block[i].df_inode = i;
 				inodes[i].inode_inum = i;
 				inodes[i].inode_filetype = 1;  
 				inodes[i].inode_filelength = length;
 				inodes[i].inode_limit = limit;
-				//inodes[i].inode_userID = userID;
 				for (int q = 0; q < 8; q++)
 				{
 					if (inodes[i].inode_userID[q] < 0)
@@ -41,9 +41,9 @@ void createfile(char filename[], int length, int userID, int limit, struct PathN
 					ADDRbuffer[j] = -1;
 				}
 				int temp = Locate(head);
-				strcpy(d_or_f[temp].dir_list[d_or_f[temp].countcount].filename, filename);
-				d_or_f[temp].dir_list[d_or_f[temp].countcount].inode = i;
-				d_or_f[temp].countcount++;
+				strcpy(data_block[temp].fcb[data_block[temp].countcount].filename, filename);
+				data_block[temp].fcb[data_block[temp].countcount].inode = i;
+				data_block[temp].countcount++;
 				break;
 			}
 		}
@@ -59,23 +59,22 @@ void deletefile(char filename[], struct PathNode* head)
 
 	int a = Locate(head);
 	int temp, i;
-	int tempcount = d_or_f[a].countcount;
+	int tempcount = data_block[a].countcount;
 
 
-	for (i = 0; i < d_or_f[a].countcount; i++)
+	for (i = 0; i < data_block[a].countcount; i++)
 	{
-		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 1 && checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))
+		if (strcmp(filename, data_block[a].fcb[i].filename) == 0 && inodes[data_block[a].fcb[i].inode].inode_filetype == 1 && checkID(inodes[data_block[a].fcb[i].inode].inode_userID))
 		{
-			for (int j = 0; j < inodes[d_or_f[a].dir_list[i].inode].inode_filelength; j++)  //清空文件内容
+			for (int j = 0; j < inodes[data_block[a].fcb[i].inode].inode_filelength; j++)  //清空文件内容
 			{
-				for (int k = 0; storage[inodes[d_or_f[a].dir_list[i].inode].inode_fileaddress[j]].txt_content[k] != '\0'; k++)
+				for (int k = 0; storage[inodes[data_block[a].fcb[i].inode].inode_fileaddress[j]].txt_content[k] != '\0'; k++)
 				{
-					storage[inodes[d_or_f[a].dir_list[i].inode].inode_fileaddress[j]].txt_content[k] = '\0';
+					storage[inodes[data_block[a].fcb[i].inode].inode_fileaddress[j]].txt_content[k] = '\0';
 				}
 			}
 
-			temp = d_or_f[a].dir_list[i].inode;
-			//inodes[temp].inode_userID = -1;
+			temp = data_block[a].fcb[i].inode;
 			for (int i = 0; i < 8; i++)
 			{
 				inodes[temp].inode_userID[i] = -1;
@@ -96,19 +95,19 @@ void deletefile(char filename[], struct PathNode* head)
 				inodes[temp].inode_fileaddress[j] = -1;
 			}
 
-			strcpy(d_or_f[a].dir_list[i].filename, "");  //初始化目录列表中的所在位置
-			d_or_f[a].dir_list[i].inode = -1;
+			strcpy(data_block[a].fcb[i].filename, "");  //初始化目录列表中的所在位置
+			data_block[a].fcb[i].inode = -1;
 
-			d_or_f[a].dir_list[i].inode = -1;  //文件i节点恢复初值
+			data_block[a].fcb[i].inode = -1;  //文件i节点恢复初值
 			inodes[temp].inode_filelength = -1;
 			inodes[temp].inode_filetype = -1;
 
-			for (int m = i; m < d_or_f[a].countcount; m++)
+			for (int m = i; m < data_block[a].countcount; m++)
 			{
-				strcpy(d_or_f[a].dir_list[m].filename, d_or_f[a].dir_list[m + 1].filename);
-				d_or_f[a].dir_list[m].inode = d_or_f[a].dir_list[m + 1].inode;
+				strcpy(data_block[a].fcb[m].filename, data_block[a].fcb[m + 1].filename);
+				data_block[a].fcb[m].inode = data_block[a].fcb[m + 1].inode;
 			}
-			d_or_f[a].countcount--;
+			data_block[a].countcount--;
 
 
 			break;

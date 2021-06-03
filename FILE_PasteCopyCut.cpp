@@ -38,8 +38,8 @@ void mv(struct PathNode* head, string name, char com)
 	chdir(head, to_name);
 	pastefile(head);
 	
-	cout << from_name << endl;
-	cout << to_name << endl;
+	//cout << from_name << endl;
+	//cout << to_name << endl;
 }
 
 void copyfile(struct PathNode* head, char filename[])
@@ -47,21 +47,22 @@ void copyfile(struct PathNode* head, char filename[])
 	Copy_LinkedLisk(head);
 
 	int a = Locate(head);
-	for (int i = 0; i < d_or_f[a].countcount; i++)
+	for (int i = 0; i < data_block[a].countcount; i++)
 	{
-		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 1 && checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))
+		if (strcmp(filename, data_block[a].fcb[i].filename) == 0 && inodes[data_block[a].fcb[i].inode].inode_filetype == 1 && checkID(inodes[data_block[a].fcb[i].inode].inode_userID))
 		{
-			new_inode_filetype = inodes[d_or_f[a].dir_list[i].inode].inode_filetype;  //文件类型
-			new_inode_filelength = inodes[d_or_f[a].dir_list[i].inode].inode_filelength;  //文件长度
-			new_inode_limit = inodes[d_or_f[a].dir_list[i].inode].inode_limit;  //文件读写权限
+			new_inode_filetype = inodes[data_block[a].fcb[i].inode].inode_filetype;  //文件类型
+			new_inode_filelength = inodes[data_block[a].fcb[i].inode].inode_filelength;  //文件长度
+			new_inode_limit = inodes[data_block[a].fcb[i].inode].inode_limit;  //文件读写权限
+			new_inode_userID = userID;
 
 			strcpy(new_filename, filename);
 
-			for (int j = 0; j < inodes[d_or_f[a].dir_list[i].inode].inode_filelength; j++)  //读取文件内容
+			for (int j = 0; j < inodes[data_block[a].fcb[i].inode].inode_filelength; j++)  //读取文件内容
 			{
-				for (int k = 0; storage[inodes[d_or_f[a].dir_list[i].inode].inode_fileaddress[j]].txt_content[k] != '\0'; k++)
+				for (int k = 0; storage[inodes[data_block[a].fcb[i].inode].inode_fileaddress[j]].txt_content[k] != '\0'; k++)
 				{
-					new_content[k] = storage[inodes[d_or_f[a].dir_list[i].inode].inode_fileaddress[j]].txt_content[k];
+					new_content[k] = storage[inodes[data_block[a].fcb[i].inode].inode_fileaddress[j]].txt_content[k];
 				}
 			}
 			break;
@@ -91,7 +92,7 @@ void cutfile(struct PathNode* head, char filename[])
 struct PathNode* Copy_LinkedLisk(struct PathNode* COPY)
 {
 	struct PathNode* p1 = COPY, * p2, * p3 = paste_head;
-	p1 = p1->next;//p2 = p2->next;
+	p1 = p1->next;
 	while (p1 != NULL)
 	{
 		p2 = InitPathNode();

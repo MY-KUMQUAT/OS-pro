@@ -24,11 +24,11 @@ void InsertNode(struct PathNode* head, struct PathNode* New)
 void create_directory(char directoryname[], int length, int userID, int limit, struct PathNode* head)
 {
 	int a = Locate(head);
-	if (d_or_f[a].countcount != 32) 
+	if (data_block[a].countcount != 32) 
 	{
-		for (int i = 0; i < d_or_f[a].countcount; i++)
+		for (int i = 0; i < data_block[a].countcount; i++)
 		{
-			if (strcmp(directoryname, d_or_f[a].dir_list[i].filename) == 0)  //如果已有重名的文件
+			if (strcmp(directoryname, data_block[a].fcb[i].filename) == 0)  //如果已有重名的文件
 			{
 				cout << "文件已存在！"  << endl;
 				return;
@@ -37,10 +37,10 @@ void create_directory(char directoryname[], int length, int userID, int limit, s
 
 		for (int i = 1; i < num_OF_inode; i++)
 		{
-			if (d_or_f[i].df_inum == -1)
+			if (data_block[i].df_inode == -1)
 			{
-				d_or_f[i].df_inum = i;
-				strcpy(d_or_f[i].dir_directoryname, directoryname);
+				data_block[i].df_inode = i;
+				strcpy(data_block[i].directoryname, directoryname);
 				inodes[i].inode_inum = i;
 				inodes[i].inode_filetype = 0;  //文件类型，0为目录文件，1为普通文件
 				inodes[i].inode_filelength = length;
@@ -64,9 +64,9 @@ void create_directory(char directoryname[], int length, int userID, int limit, s
 					ADDRbuffer[j] = -1;
 				}
 				int temp = Locate(head);
-				strcpy(d_or_f[temp].dir_list[d_or_f[temp].countcount].filename, directoryname);
-				d_or_f[temp].dir_list[d_or_f[temp].countcount].inode = i;
-				d_or_f[temp].countcount++;
+				strcpy(data_block[temp].fcb[data_block[temp].countcount].filename, directoryname);
+				data_block[temp].fcb[data_block[temp].countcount].inode = i;
+				data_block[temp].countcount++;
 				break;
 			}
 		}

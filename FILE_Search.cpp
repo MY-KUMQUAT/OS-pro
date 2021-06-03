@@ -17,13 +17,13 @@ void searchfile(string reg_name, struct PathNode* head, int depth)
 	}
 
 	int i, a = Locate(head);
-	for (i = 0; i < d_or_f[a].countcount; i++)
+	for (i = 0; i < data_block[a].countcount; i++)
 	{
-		string filename = ChangeCharToStr(d_or_f[a].dir_list[i].filename);
+		string filename = ChangeCharToStr(data_block[a].fcb[i].filename);
 		bool ret = regex_match(filename, reg); //正则匹配
-		if (checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))
+		if (checkID(inodes[data_block[a].fcb[i].inode].inode_userID))
 		{
-			if (ret == 1)
+			if (ret == 1)  //打印目录及文件
 			{
 				struct PathNode* p1 = head;
 				cout << "/" << p1->NodeName;
@@ -33,14 +33,14 @@ void searchfile(string reg_name, struct PathNode* head, int depth)
 					cout << "/" << p1->NodeName;
 					p1 = p1->next;
 				}
-				cout << "/" << d_or_f[a].dir_list[i].filename << endl;
+				cout << "/" << data_block[a].fcb[i].filename << endl;
 				file_found++;
 			}
-			else if (inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 0)
+			else if (inodes[data_block[a].fcb[i].inode].inode_filetype == 0)
 			{
 				recursion_flag++;  //搜索递归深度
-				Enter(head, d_or_f[a].dir_list[i].filename);
-				searchfile(reg_name, head, depth);
+				Enter(head, data_block[a].fcb[i].filename);  //进入下一层
+				searchfile(reg_name, head, depth);  //递归入口
 				ReturnLastLevel(head);
 				recursion_flag--;
 			}
@@ -50,6 +50,5 @@ void searchfile(string reg_name, struct PathNode* head, int depth)
 	{
 		cout << "没有那个文件或目录！" << endl;
 	}
-	file_found = 0;
 	return;
 }

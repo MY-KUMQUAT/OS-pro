@@ -1,8 +1,8 @@
 #include "OS_pro.h"
 
-void write_system(FILE* fp)   //将磁盘信息统统写入系统文件中（以二进制文件的形式）
+void write_system(FILE* fp,char* filename)   //将磁盘信息统统写入系统文件中（以二进制文件的形式）
 {
-	fp = fopen("filesystem", "wb");
+	fp = fopen(filename, "wb");
 	for (int i = 0; i < num_OF_storage; i++)
 	{
 		fwrite(&storage[i], sizeof(struct block), 1, fp);
@@ -22,7 +22,7 @@ void write_system(FILE* fp)   //将磁盘信息统统写入系统文件中（以二进制文件的形式
 
 	for (int i = 0; i < num_OF_datablock; i++)
 	{
-		fwrite(&d_or_f[i], sizeof(struct dir_file_block), 1, fp);
+		fwrite(&data_block[i], sizeof(struct dir_file_block), 1, fp);
 	}
 
 	for (int i = 0; i < num_OF_storage; i++)
@@ -33,9 +33,9 @@ void write_system(FILE* fp)   //将磁盘信息统统写入系统文件中（以二进制文件的形式
 	fclose(fp);
 }
 
-void read_system(FILE* fp)  //将磁盘信息从系统文件filesystem中读取出来
+void read_system(FILE* fp, char* filename)  //将磁盘信息从系统文件filesystem中读取出来
 {
-	fp = fopen("filesystem", "rb");
+	fp = fopen(filename, "rb");
 	for (int i = 0; i < num_OF_storage; i++)
 	{
 		fread(&storage[i], sizeof(struct block), 1, fp);
@@ -55,7 +55,7 @@ void read_system(FILE* fp)  //将磁盘信息从系统文件filesystem中读取出来
 
 	for (int i = 0; i < num_OF_datablock; i++)
 	{
-		fread(&d_or_f[i], sizeof(struct dir_file_block), 1, fp);
+		fread(&data_block[i], sizeof(struct dir_file_block), 1, fp);
 	}
 
 	for (int i = 0; i < num_OF_storage; i++)

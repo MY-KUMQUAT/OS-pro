@@ -17,16 +17,16 @@
 
 struct PathNode  //目录链表
 {
-	char* NodeName;
-	int Node_Inode;
-	struct PathNode* next;
+	char* NodeName; //节点名称
+	int Node_Inode; //i节点号
+	struct PathNode* next;  //链表指针
 };
 
 struct userlog //用户
 {
-	int uid;
-	char password[14];
-	char username[14];
+	int uid;  //用户ID
+	char password[14]; //用户密码
+	char username[14];  //用户名
 };
 
 struct super_block  //超级块
@@ -38,23 +38,23 @@ struct super_block  //超级块
 struct block  //每块
 {
 	int blk_num;  //空闲块个数
-	int blk_free[50];  //空闲盘块的地址
+	int blk_free[num_OF_superblock];  //空闲盘块的地址
 	int blk_flag;  //块占用标志
 	char txt_content[size_OF_block];  //块上每个字节存放的内容
 };
 
-struct dir_list
+struct fcb
 {
-	char filename[14];
-	int inode;
+	char filename[14];  //文件名
+	int inode;  //i节点号
 };
 
 struct dir_file_block
 {
-	struct dir_list dir_list[32];  //目录列表，文件名×i节点
-	int countcount;//记录目录保存元素数量，初值为0
-	char dir_directoryname[10];  //目录名称
-	int df_inum;  //目录或文件的i节点号
+	struct fcb fcb[32];  //目录列表，文件名、i节点
+	int countcount;//记录目录保存元素数量
+	char directoryname[10];  //目录名称
+	int df_inode;  //i节点号
 };
 
 struct inode  //i节点

@@ -39,7 +39,7 @@ void regist(int index)//注册
 	cout << "注册成功！请登录。" << endl;
 }
 
-int dengLu()//登陆
+int dengLu(struct PathNode* head)//登陆
 {
 	string usrname;
 	string password;
@@ -73,15 +73,19 @@ int dengLu()//登陆
 		cout << "密码输入错误达5次，退出登录程序。" << endl;
 		return -1;
 	}
-	else cout << "登录成功！" << endl;
+	else
+	{
+		cout << "登录成功！" << endl;
+		ReturnRoot(head);
+	}
 	return index;
 }
 
 void login(struct PathNode* head)
 {
-	int usrNum = checkUsrNum();
 	while (1)
 	{
+		int usrNum = checkUsrNum();
 		int logState = 0;//登录状态,没登上去就是-1
 		cout << ">>文件管理系统" << endl;
 		if (usrNum == 0)//用户个数为0,注册
@@ -109,7 +113,7 @@ void login(struct PathNode* head)
 				break;
 			}
 			else {//注册成功
-				logState = dengLu();
+				logState = dengLu(head);
 				if (logState != -1)//登录成功
 				{
 					if (!menu(head, logState))//进入菜单
@@ -137,7 +141,7 @@ void login(struct PathNode* head)
 			}
 			if (answer == 1)
 			{
-				logState = dengLu();//登录
+				logState = dengLu(head);//登录
 				if (logState != -1)
 				{
 					if (!menu(head, logState))//进入菜单
@@ -150,7 +154,7 @@ void login(struct PathNode* head)
 			else if (answer == 2)
 			{
 				regist(usrNum);//注册
-				logState = dengLu();
+				logState = dengLu(head);
 				if (logState != -1)//登录成功
 				{
 					if (!menu(head, logState))//进入菜单
@@ -163,7 +167,7 @@ void login(struct PathNode* head)
 		}
 		else//满了
 		{
-			logState = dengLu();
+			logState = dengLu(head);
 			if (logState != -1)//登录成功
 			{
 				if (!menu(head, logState))//进入菜单

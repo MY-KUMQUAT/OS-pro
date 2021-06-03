@@ -16,6 +16,8 @@ void ReturnLastLevel(struct PathNode* head);
 void ReturnRoot(PathNode* head);
 void Dir(struct PathNode* head);
 
+int CountSize(PathNode* head, char* dir);
+
 struct PathNode* InitPathNode();
 void create_directory(char directoryname[], int length, int userID, int limit, struct PathNode* head);
 void InsertNode(struct PathNode* head, struct PathNode* New);
@@ -23,3 +25,5 @@ void InsertNode(struct PathNode* head, struct PathNode* New);
 void delete_dirctory(char directory[], struct PathNode* head);
 void recycledelete(struct PathNode* head, char directory[]);
 void release(int iNode);
+
+void DirRename(struct PathNode* head, string name_f, string name_s);

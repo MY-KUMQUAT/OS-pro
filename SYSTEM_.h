@@ -6,8 +6,9 @@
 #include <malloc.h>
 
 void format();
-void write_system(FILE* fp);
-void read_system(FILE* fp);
 void allocation(int length);
 void recycling(int lenghth);
 void clearADDRbuffer();
+
+void read_system(FILE* fp, char* filename);
+void write_system(FILE* fp, char* filename);

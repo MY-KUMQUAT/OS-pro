@@ -5,13 +5,13 @@ void openfile(char* filename, struct PathNode* head)
 {
 	int a = Locate(head);
 	int i;
-	for (i = 0; i < d_or_f[a].countcount; i++)
+	for (i = 0; i < data_block[a].countcount; i++)
 	{
-		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 1 && checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))
+		if (strcmp(filename, data_block[a].fcb[i].filename) == 0 && inodes[data_block[a].fcb[i].inode].inode_filetype == 1 && checkID(inodes[data_block[a].fcb[i].inode].inode_userID))
 		{
 			if (openfile_array_head < maxnum_OF_openfile)
 			{
-				openfile_array[openfile_array_head] = d_or_f[a].dir_list[i].inode;
+				openfile_array[openfile_array_head] = data_block[a].fcb[i].inode;
 				openfile_array_head++;
 			}
 			else
@@ -21,7 +21,7 @@ void openfile(char* filename, struct PathNode* head)
 			break;
 		}
 	}
-	if (i == d_or_f[a].countcount)
+	if (i == data_block[a].countcount)
 	{
 		cout << "文件不存在或无访问权限!" << endl;
 	}
@@ -31,14 +31,14 @@ void closefile(char filename[], struct PathNode* head)
 {
 	int a = Locate(head);
 	int i;
-	for (i = 0; i < d_or_f[a].countcount; i++)
+	for (i = 0; i < data_block[a].countcount; i++)
 	{
-		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 1 && checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))
+		if (strcmp(filename, data_block[a].fcb[i].filename) == 0 && inodes[data_block[a].fcb[i].inode].inode_filetype == 1 && checkID(inodes[data_block[a].fcb[i].inode].inode_userID))
 		{
 			int flag = 0;
 			for (int j = 0; j < openfile_array_head; j++)
 			{
-				if (d_or_f[a].dir_list[i].inode == openfile_array[j])
+				if (data_block[a].fcb[i].inode == openfile_array[j])
 				{
 					for (int k = j; k < openfile_array_head; k++)
 					{
@@ -56,7 +56,7 @@ void closefile(char filename[], struct PathNode* head)
 			return;
 		}
 	}
-	if (i == d_or_f[a].countcount)
+	if (i == data_block[a].countcount)
 	{
 		cout << "文件不存在或无访问权限!" << endl;
 	}
@@ -67,13 +67,13 @@ bool file_access(char* filename, struct PathNode* head)
 {
 	int a = Locate(head);
 	int i, m;
-	for (i = 0; i < d_or_f[a].countcount; i++)
+	for (i = 0; i < data_block[a].countcount; i++)
 	{
-		if (strcmp(filename, d_or_f[a].dir_list[i].filename) == 0 && inodes[d_or_f[a].dir_list[i].inode].inode_filetype == 1 && checkID(inodes[d_or_f[a].dir_list[i].inode].inode_userID))
+		if (strcmp(filename, data_block[a].fcb[i].filename) == 0 && inodes[data_block[a].fcb[i].inode].inode_filetype == 1 && checkID(inodes[data_block[a].fcb[i].inode].inode_userID))
 		{
 			for (m = 0; m < openfile_array_head; m++) //是否在打开文件链表里
 			{
-				if (openfile_array[m] == d_or_f[a].dir_list[i].inode)
+				if (openfile_array[m] == data_block[a].fcb[i].inode)
 				{
 					return true;
 				}
@@ -86,7 +86,7 @@ bool file_access(char* filename, struct PathNode* head)
 			break;
 		}
 	}
-	if (i == d_or_f[a].countcount)
+	if (i == data_block[a].countcount)
 	{
 		cout << "文件不存在或无访问权限!" << endl;
 		return false;

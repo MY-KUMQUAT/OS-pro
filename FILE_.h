@@ -26,3 +26,5 @@ void searchfile(string filename, PathNode* head, int depth);
 
 void ShareFile(string filename, string usr, struct PathNode* head);
 void Recovery(string filename, string usr, struct PathNode* head);
+
+void FileRename(struct PathNode* head, string file1, string file2);

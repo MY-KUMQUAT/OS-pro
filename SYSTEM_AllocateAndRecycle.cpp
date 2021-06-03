@@ -13,13 +13,13 @@ void allocation(int length)
 		}
 		else //磁盘空间足够
 		{
-			if (super_block.sbk_num == 1) //如果占用的磁盘块为栈中仅剩的一个（被占用的磁盘块中存放着下一组空闲磁盘块的地址）
+			if (super_block.sbk_num == 1) //如果占用的磁盘块为栈中仅剩的一个,被占用的磁盘块中存放着下一组空闲磁盘块的地址）
 			{
 				storage[super_block.sbk_free[0]].blk_flag = 1; //占用当前磁盘块
 				ADDRbuffer[i] = super_block.sbk_free[0]; //将被占用的磁盘块号存入缓冲区
 				super_block.sbk_num--;
 
-				int temp_add = storage[super_block.sbk_free[0]].blk_num - 1;
+				//int temp_add = storage[super_block.sbk_free[0]].blk_num - 1;
 				for (int i = 0; i < storage[super_block.sbk_free[0]].blk_num; i++)
 				{
 					super_block.sbk_free[temp--] = storage[super_block.sbk_free[0]].blk_free[i];

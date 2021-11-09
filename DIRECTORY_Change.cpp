@@ -167,13 +167,14 @@ void Dir(struct PathNode* head)//
 			{
 				if (inodes[dirlist[i].inode].inode_userID[q] == -1)
 				{
-					cout << endl;
 					continue;
 				}
 				else
 					cout << user[inodes[dirlist[i].inode].inode_userID[q]].username << "|";
 			}
+			cout << endl;
 		}
+		
 		if (inodes[dirlist[i].inode].inode_filetype == 0 && checkID(inodes[dirlist[i].inode].inode_userID))
 		{
 			int count = CountSize(head, dirlist[i].filename);
@@ -184,12 +185,12 @@ void Dir(struct PathNode* head)//
 			{
 				if (inodes[dirlist[i].inode].inode_userID[q] == -1)
 				{
-					cout << endl;
 					continue;
 				}
 				else
 					cout << user[inodes[dirlist[i].inode].inode_userID[q]].username << "|";
 			}
+			cout << endl;
 		}
 		
 	}

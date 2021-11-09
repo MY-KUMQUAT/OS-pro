@@ -227,7 +227,7 @@ int checkUsrNum()//检查注册的用户是否已经达到8个
 
 bool checkID(int* usrID)//检查用户id是否在可对文件操作的数组内
 {
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < size_OF_user; i++)
 	{
 		if (usrID[i] == userID)
 			return true;
